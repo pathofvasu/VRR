@@ -1,66 +1,108 @@
 # VRR Events
 
-VRR Events is a production-oriented full-stack event management web application being built phase by phase. This repository currently contains the Phase 1 project scaffold and documentation baseline.
+VRR Events is a production-oriented full-stack event management web application being built phase by phase. The repository now includes the Phase 1 scaffold and the Phase 2 backend Express foundation.
 
 ## Current Phase
 
 - Phase 1: Project Initialization & Folder Structure
+- Phase 2: Backend Setup & Express Server
 
-## Completed In Phase 1
+## Completed Modules
+
+### Phase 1
 
 - Created the root project structure for `frontend` and `backend`
 - Added backend MVC-oriented module directories
 - Added frontend page entry files for the core user flows
 - Added Git tracking support for otherwise-empty folders
 - Added repository hygiene with a focused `.gitignore`
-- Added initial setup, structure, and testing documentation
+
+### Phase 2
+
+- Added backend `package.json` with runtime and development scripts
+- Added a modular Express application bootstrap
+- Added versioned API routing under `/api/v1`
+- Added a health-check controller and route
+- Added centralized `404` and error-handling middleware
+- Added graceful shutdown handling in the HTTP server entrypoint
 
 ## Project Structure
 
 ```text
 VRR/
-├── backend/
-│   ├── config/
-│   ├── controllers/
-│   ├── middleware/
-│   ├── models/
-│   ├── routes/
-│   ├── services/
-│   ├── uploads/
-│   └── utils/
-├── frontend/
-│   ├── assets/
-│   ├── components/
-│   ├── css/
-│   ├── js/
-│   ├── booking.html
-│   ├── dashboard.html
-│   ├── index.html
-│   ├── login.html
-│   └── register.html
-├── .gitignore
-└── README.md
+|-- backend/
+|   |-- app.js
+|   |-- package.json
+|   |-- server.js
+|   |-- config/
+|   |   `-- constants.js
+|   |-- controllers/
+|   |   |-- healthController.js
+|   |   `-- .gitkeep
+|   |-- middleware/
+|   |   |-- errorHandler.js
+|   |   |-- notFound.js
+|   |   `-- .gitkeep
+|   |-- models/
+|   |   `-- .gitkeep
+|   |-- routes/
+|   |   |-- index.js
+|   |   `-- .gitkeep
+|   |-- services/
+|   |   `-- .gitkeep
+|   |-- uploads/
+|   |   `-- .gitkeep
+|   `-- utils/
+|       `-- .gitkeep
+|-- frontend/
+|   |-- assets/
+|   |-- components/
+|   |-- css/
+|   |-- js/
+|   |-- booking.html
+|   |-- dashboard.html
+|   |-- index.html
+|   |-- login.html
+|   `-- register.html
+|-- .gitignore
+`-- README.md
 ```
 
 ## Setup Instructions
 
-1. Open the project in your terminal:
+1. Open the project:
 
    ```powershell
    cd D:\VRR
    ```
 
-2. Confirm the scaffold exists:
+2. Install backend dependencies:
 
    ```powershell
-   Get-ChildItem -Recurse
+   cd backend
+   npm install
    ```
 
-3. Use Phase 2 to initialize the backend runtime and Express server before attempting to run the application.
+3. Start the backend in development mode:
+
+   ```powershell
+   npm run dev
+   ```
+
+4. Verify the backend health endpoint:
+
+   ```text
+   GET http://localhost:5000/api/v1/health
+   ```
+
+## Backend Scripts
+
+- `npm start`: starts the backend with Node.js
+- `npm run dev`: starts the backend with Nodemon
 
 ## Modules Status
 
-- Landing page: structure pending implementation
+- Landing page: UI pending
 - Authentication: pending
 - Booking system: pending
 - Admin dashboard: pending
@@ -73,21 +115,32 @@ VRR/
 
 ## APIs
 
-No APIs are implemented in Phase 1. Backend endpoints will begin in Phase 2 after server initialization.
+### Available In Phase 2
+
+- `GET /`
+  Returns API availability metadata.
+- `GET /api/v1/health`
+  Returns health status, environment, and server timestamp.
 
 ## Environment Variables
 
-No environment variables are required in Phase 1. Environment configuration will be introduced in Phase 3.
+Environment variables are not required yet, but the server already supports:
+
+- `PORT`: optional override for the default port `5000`
+- `NODE_ENV`: optional runtime environment flag
+
+Formal `.env` configuration will be introduced in Phase 3.
 
 ## Testing Steps
 
-1. Verify the directory tree matches the documented structure.
-2. Confirm the frontend entry pages exist and open as plain HTML files.
-3. Confirm `backend/uploads/.gitkeep` exists so the uploads directory remains tracked.
-4. Confirm `.gitignore` excludes runtime artifacts and local secrets.
+1. Run `npm install` inside `backend`.
+2. Run `npm run dev`.
+3. Open `http://localhost:5000/` and confirm the API status response.
+4. Open `http://localhost:5000/api/v1/health` and confirm the health JSON response.
+5. Call a missing route such as `http://localhost:5000/api/v1/missing` and confirm the `404` JSON error response.
 
 ## Phase Notes
 
-- This phase intentionally establishes structure only.
-- No backend runtime, database connection, authentication flow, or business logic has been added yet.
-- The next phase should initialize Node.js, Express, and the backend entrypoint.
+- Phase 2 adds the backend runtime only.
+- MongoDB connection and environment-file management begin in Phase 3.
+- Authentication, booking logic, and dashboards are intentionally deferred to later phases.
