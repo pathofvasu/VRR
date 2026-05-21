@@ -1,10 +1,12 @@
-const { APP_NAME, NODE_ENV } = require("../config/constants");
+const env = require("../config/env");
+const { getDatabaseState } = require("../config/database");
 
 const getHealthStatus = (_req, res) => {
   res.status(200).json({
     success: true,
-    message: `${APP_NAME} backend is healthy`,
-    environment: NODE_ENV,
+    message: `${env.appName} backend is healthy`,
+    environment: env.nodeEnv,
+    database: getDatabaseState(),
     timestamp: new Date().toISOString(),
   });
 };

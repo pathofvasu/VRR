@@ -4,7 +4,7 @@ const helmet = require("helmet");
 const morgan = require("morgan");
 
 const apiRoutes = require("./routes");
-const { APP_NAME, API_PREFIX, NODE_ENV } = require("./config/constants");
+const env = require("./config/env");
 const notFound = require("./middleware/notFound");
 const errorHandler = require("./middleware/errorHandler");
 
@@ -14,24 +14,30 @@ app.disable("x-powered-by");
 app.use(helmet());
 app.use(
   cors({
-    origin: true,
+    origin(origin, callback) {
+      if (!origin || env.corsOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+
+      return callback(new Error(`CORS blocked for origin: ${origin}`));
+    },
     credentials: true,
   })
 );
 app.use(express.json({ limit: "1mb" }));
 app.use(express.urlencoded({ extended: true, limit: "1mb" }));
-app.use(morgan(NODE_ENV === "production" ? "combined" : "dev"));
+app.use(morgan(env.nodeEnv === "production" ? "combined" : "dev"));
 
 app.get("/", (_req, res) => {
   res.status(200).json({
     success: true,
-    message: `${APP_NAME} API is running`,
-    environment: NODE_ENV,
-    docs: `${API_PREFIX}/health`,
+    message: `${env.appName} API is running`,
+    environment: env.nodeEnv,
+    docs: `${env.apiPrefix}/health`,
   });
 });
 
-app.use(API_PREFIX, apiRoutes);
+app.use(env.apiPrefix, apiRoutes);
 app.use(notFound);
 app.use(errorHandler);
 
