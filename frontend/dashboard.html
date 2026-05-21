@@ -4,11 +4,80 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>VRR Events | Dashboard</title>
+  <link rel="stylesheet" href="./css/auth.css">
 </head>
 <body>
-  <main>
-    <h1>Dashboard</h1>
-    <p>Dashboard scaffold created in Phase 1. Role-specific dashboards arrive in later phases.</p>
+  <main class="dashboard-shell">
+    <div class="dashboard-layout">
+      <section class="dashboard-panel" aria-labelledby="dashboard-title">
+        <div class="dashboard-headline">
+          <div class="dashboard-kicker">Authenticated Client Session</div>
+          <h1 id="dashboard-title">Your VRR Events session is active.</h1>
+          <p>
+            This Phase 5 view confirms frontend token storage and backend profile retrieval before the full
+            dashboards arrive in later phases.
+          </p>
+        </div>
+
+        <div class="status-banner" data-status-banner aria-live="polite"></div>
+
+        <div class="dashboard-card-grid">
+          <article class="metric-card">
+            <strong>JWT Stored</strong>
+            <span>Session token is saved in browser local storage.</span>
+          </article>
+          <article class="metric-card">
+            <strong>Profile Sync</strong>
+            <span>`/api/v1/auth/me` is used to verify the active session.</span>
+          </article>
+          <article class="metric-card">
+            <strong>Next Phase Ready</strong>
+            <span>These helpers can now support booking and dashboard workflows.</span>
+          </article>
+        </div>
+
+        <p>
+          Backend API in use:
+          <span class="pill" data-api-base></span>
+        </p>
+
+        <div class="dashboard-actions">
+          <button class="primary-button" type="button" data-refresh-profile>Refresh Profile</button>
+          <button class="secondary-button" type="button" data-sign-out>Sign Out</button>
+        </div>
+      </section>
+
+      <aside class="profile-panel" aria-labelledby="profile-title">
+        <div class="panel-header">
+          <h2 id="profile-title">Stored Account Snapshot</h2>
+          <p>Your frontend auth layer keeps this session available until sign-out or token invalidation.</p>
+        </div>
+
+        <dl class="profile-meta">
+          <div>
+            <dt>Name</dt>
+            <dd data-user-name>Loading...</dd>
+          </div>
+          <div>
+            <dt>Email</dt>
+            <dd data-user-email>Loading...</dd>
+          </div>
+          <div>
+            <dt>Role</dt>
+            <dd data-user-role>Loading...</dd>
+          </div>
+          <div>
+            <dt>Created At</dt>
+            <dd data-user-created-at>Loading...</dd>
+          </div>
+        </dl>
+
+        <p>
+          Need a different account? <a class="dashboard-link" href="./login.html">Return to login</a>.
+        </p>
+      </aside>
+    </div>
   </main>
+  <script type="module" src="./js/dashboard.js"></script>
 </body>
 </html>

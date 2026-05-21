@@ -4,11 +4,99 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>VRR Events | Register</title>
+  <link rel="stylesheet" href="./css/auth.css">
 </head>
 <body>
-  <main>
-    <h1>Register</h1>
-    <p>Registration interface scaffold created in Phase 1. Functional UI arrives in Phase 5.</p>
+  <main class="auth-shell">
+    <div class="auth-layout">
+      <section class="brand-panel" aria-labelledby="register-brand-title">
+        <div class="eyebrow">Client Onboarding</div>
+        <h1 id="register-brand-title">Create an account built for confident planning.</h1>
+        <p>
+          Start your VRR Events journey with a secure account that keeps consultation prep, budget updates,
+          and booking milestones connected from day one.
+        </p>
+        <div class="feature-grid">
+          <article class="feature-card">
+            <strong>Centralized planning</strong>
+            <span>Keep every event discussion, estimate, and approval path anchored to one client profile.</span>
+          </article>
+          <article class="feature-card">
+            <strong>Clear expectations</strong>
+            <span>Validated forms reduce bad requests before they ever reach the backend.</span>
+          </article>
+          <article class="feature-card">
+            <strong>Session persistence</strong>
+            <span>Your new account signs you in immediately and stores the token for follow-up screens.</span>
+          </article>
+          <article class="feature-card">
+            <strong>Scales with roles</strong>
+            <span>The auth foundation is already aligned with future admin and organizer modules.</span>
+          </article>
+        </div>
+      </section>
+
+      <section class="form-panel" aria-labelledby="register-title">
+        <div class="panel-header">
+          <h2 id="register-title">Create your VRR Events account</h2>
+          <p>Client accounts are created through the Phase 4 backend and redirected into a signed-in dashboard state.</p>
+        </div>
+
+        <div class="status-banner" data-status-banner aria-live="polite"></div>
+
+        <form class="auth-form" data-auth-form="register" novalidate>
+          <div class="field-group" data-field-group="apiBaseUrl">
+            <label for="apiBaseUrl">Backend API Base URL</label>
+            <input id="apiBaseUrl" name="apiBaseUrl" type="url" placeholder="http://localhost:5000/api/v1" autocomplete="off">
+            <p class="field-help">Keep this aligned with your Express backend, usually `http://localhost:5000/api/v1` during development.</p>
+            <div class="field-error" data-field-error="apiBaseUrl" aria-live="polite"></div>
+          </div>
+
+          <div class="field-group" data-field-group="name">
+            <label for="name">Full Name</label>
+            <input id="name" name="name" type="text" placeholder="Aarav Mehta" autocomplete="name">
+            <div class="field-error" data-field-error="name" aria-live="polite"></div>
+          </div>
+
+          <div class="field-group" data-field-group="email">
+            <label for="email">Email Address</label>
+            <input id="email" name="email" type="email" placeholder="you@example.com" autocomplete="email">
+            <div class="field-error" data-field-error="email" aria-live="polite"></div>
+          </div>
+
+          <div class="field-row">
+            <div class="field-group" data-field-group="password">
+              <label for="password">Password</label>
+              <div class="inline-input">
+                <input id="password" name="password" type="password" placeholder="Create a secure password" autocomplete="new-password">
+                <button class="ghost-button" type="button" data-toggle-password="password">Show</button>
+              </div>
+              <p class="field-help">Use at least 8 characters with at least one letter and one number.</p>
+              <div class="field-error" data-field-error="password" aria-live="polite"></div>
+            </div>
+
+            <div class="field-group" data-field-group="confirmPassword">
+              <label for="confirmPassword">Confirm Password</label>
+              <div class="inline-input">
+                <input id="confirmPassword" name="confirmPassword" type="password" placeholder="Repeat your password" autocomplete="new-password">
+                <button class="ghost-button" type="button" data-toggle-password="confirmPassword">Show</button>
+              </div>
+              <div class="field-error" data-field-error="confirmPassword" aria-live="polite"></div>
+            </div>
+          </div>
+
+          <div class="auth-actions">
+            <button class="primary-button" type="submit" data-submit-button>Create Account</button>
+            <a class="secondary-button dashboard-link" href="./login.html">Already Registered</a>
+          </div>
+
+          <p class="auth-footer">
+            Already have an account? <a href="./login.html">Sign in here</a>.
+          </p>
+        </form>
+      </section>
+    </div>
   </main>
+  <script type="module" src="./js/register.js"></script>
 </body>
 </html>

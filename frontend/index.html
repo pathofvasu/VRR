@@ -4,11 +4,349 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>VRR Events | Home</title>
+  <meta name="description" content="VRR Events crafts refined celebrations, corporate showcases, and end-to-end planning experiences with booking support, consultations, and milestone visibility.">
+  <link rel="stylesheet" href="./css/landing.css">
 </head>
 <body>
-  <main>
-    <h1>VRR Events</h1>
-    <p>Landing page scaffold created in Phase 1. UI implementation starts in Phase 6.</p>
-  </main>
+  <div class="site-shell">
+    <header class="site-header" data-site-header>
+      <div class="container nav-row">
+        <a class="brand" href="./index.html" aria-label="VRR Events home">
+          <span class="brand-mark">VR</span>
+          <span>VRR Events</span>
+        </a>
+
+        <nav class="nav-links" aria-label="Primary navigation">
+          <a href="#services">Services</a>
+          <a href="#portfolio">Portfolio</a>
+          <a href="#results">Results</a>
+          <a href="#testimonials">Stories</a>
+          <a href="#consultation">Consultation</a>
+        </nav>
+
+        <div class="nav-actions">
+          <a class="button-ghost" href="./login.html">Log In</a>
+          <a class="button" href="./booking.html">Book a Consultation</a>
+        </div>
+
+        <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="nav-overlay" data-menu-toggle>
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </div>
+
+      <div class="container">
+        <nav class="nav-overlay" id="nav-overlay" hidden data-nav-overlay aria-label="Mobile navigation">
+          <a href="#services" data-nav-link>Services</a>
+          <a href="#portfolio" data-nav-link>Portfolio</a>
+          <a href="#results" data-nav-link>Results</a>
+          <a href="#testimonials" data-nav-link>Stories</a>
+          <a href="#consultation" data-nav-link>Consultation</a>
+          <a href="./login.html" data-nav-link>Log In</a>
+          <a href="./booking.html" data-nav-link>Book a Consultation</a>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div class="container hero-grid">
+          <article class="hero-copy" data-reveal>
+            <div class="hero-badge">Full-Spectrum Event Planning</div>
+            <h1>Events that feel cinematic, calm, and completely coordinated.</h1>
+            <p>
+              VRR Events helps clients move from idea to execution with polished planning, trusted vendor
+              coordination, guided consultations, and transparent booking progress at every stage.
+            </p>
+
+            <div class="hero-actions">
+              <a class="button" href="./booking.html">Start Your Booking</a>
+              <a class="button-outline" href="#portfolio">Explore Portfolio</a>
+            </div>
+
+            <div class="hero-stats">
+              <div class="hero-stat-card">
+                <strong>360-degree</strong>
+                <span>Planning coverage across concept, execution, and post-event wrap-up.</span>
+              </div>
+              <div class="hero-stat-card">
+                <strong>48h</strong>
+                <span>Typical turnaround for initial consultation coordination after inquiry review.</span>
+              </div>
+              <div class="hero-stat-card">
+                <strong>1 hub</strong>
+                <span>Client-facing flow for consultations, estimates, agreements, and updates.</span>
+              </div>
+            </div>
+          </article>
+
+          <aside class="hero-card" data-reveal>
+            <div class="hero-visual">
+              <div class="hero-visual-top">
+                <div class="section-tag">Signature Experience</div>
+                <h2>From intimate family milestones to sharp brand launches.</h2>
+              </div>
+
+              <div class="hero-visual-bottom">
+                <div class="schedule-item">
+                  <div>
+                    <strong>Concept Direction</strong>
+                    <span>Design storytelling, budget framing, venue fit</span>
+                  </div>
+                  <span>Week 1</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="hero-schedule">
+              <div class="schedule-item">
+                <div>
+                  <strong>Consultation Planning</strong>
+                  <span>Schedule calls, gather expectations, define next steps</span>
+                </div>
+                <span>Phase 1</span>
+              </div>
+              <div class="schedule-item">
+                <div>
+                  <strong>Vendor & Timeline Sync</strong>
+                  <span>Translate vision into operational clarity with fewer surprises</span>
+                </div>
+                <span>Phase 2</span>
+              </div>
+              <div class="schedule-item">
+                <div>
+                  <strong>Guest-Facing Finish</strong>
+                  <span>Elevate the experience without losing control behind the scenes</span>
+                </div>
+                <span>Phase 3</span>
+              </div>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <section class="section" id="services">
+        <div class="container">
+          <div class="section-header" data-reveal>
+            <div>
+              <div class="section-tag">Services</div>
+              <h2>Planning layers designed to reduce noise and raise quality.</h2>
+            </div>
+            <p>
+              Every service line is built to support a cleaner booking journey, sharper coordination, and a
+              more confident client experience from first inquiry onward.
+            </p>
+          </div>
+
+          <div class="services-grid">
+            <article class="service-card" data-reveal>
+              <div class="service-icon">01</div>
+              <h3>Wedding & Celebration Planning</h3>
+              <p>End-to-end planning for weddings, engagements, family ceremonies, and multi-day experiences.</p>
+            </article>
+            <article class="service-card" data-reveal>
+              <div class="service-icon">02</div>
+              <h3>Corporate Event Production</h3>
+              <p>Launches, award nights, leadership off-sites, and branded gatherings with operational precision.</p>
+            </article>
+            <article class="service-card" data-reveal>
+              <div class="service-icon">03</div>
+              <h3>Consultations & Budget Mapping</h3>
+              <p>Discovery sessions that turn broad goals into realistic estimates, packages, and next actions.</p>
+            </article>
+            <article class="service-card" data-reveal>
+              <div class="service-icon">04</div>
+              <h3>On-Ground Coordination</h3>
+              <p>Run-of-show management, vendor alignment, guest flow support, and final execution oversight.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="portfolio">
+        <div class="container">
+          <div class="section-header" data-reveal>
+            <div>
+              <div class="section-tag">Portfolio</div>
+              <h2>Moments crafted with atmosphere, structure, and personality.</h2>
+            </div>
+            <p>
+              These spotlight formats show the range we're building toward in the product: elegant celebrations,
+              immersive staging, and event operations that stay intentional all the way through.
+            </p>
+          </div>
+
+          <div class="portfolio-grid">
+            <article class="portfolio-card large dawn" data-reveal>
+              <div class="portfolio-meta">Destination Wedding Weekend</div>
+              <h3>Sunrise vows, layered hospitality, and a guest journey that never felt rushed.</h3>
+              <p>Three-day planning arc with ceremony design, family hosting flow, and timeline orchestration.</p>
+            </article>
+
+            <article class="portfolio-card tall verdant" data-reveal>
+              <div class="portfolio-meta">Garden Engagement Soiree</div>
+              <h3>Modern floral composition with an intimate, editorial atmosphere.</h3>
+              <p>Built around a smaller guest list and stronger visual detail.</p>
+            </article>
+
+            <article class="portfolio-card wide gala" data-reveal>
+              <div class="portfolio-meta">Corporate Reveal Night</div>
+              <h3>Launch staging, VIP routing, and presentation moments engineered for clarity.</h3>
+              <p>Designed for brand confidence on stage and calm coordination behind it.</p>
+            </article>
+
+            <article class="portfolio-card compact sunlit" data-reveal>
+              <div class="portfolio-meta">Private Milestone Dinner</div>
+              <h3>Warm lighting, intimate tablescapes, and gentle storytelling touches.</h3>
+              <p>Small-format event design without small-format thinking.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section stats-band" id="results">
+        <div class="container">
+          <div class="section-header" data-reveal>
+            <div>
+              <div class="section-tag">Results</div>
+              <h2>Signals that the experience is becoming easier to trust.</h2>
+            </div>
+            <p>
+              These counters represent the kind of operational confidence and client clarity the platform is being
+              designed to support as more modules come online.
+            </p>
+          </div>
+
+          <div class="stats-grid">
+            <article class="stat-card" data-reveal>
+              <span class="stat-value" data-stat-target="120" data-stat-suffix="+">0+</span>
+              <div class="stat-label">Curated event concepts</div>
+              <p class="metric-note">A planning archive that helps refine recommendations faster.</p>
+            </article>
+            <article class="stat-card" data-reveal>
+              <span class="stat-value" data-stat-target="96" data-stat-suffix="%">0%</span>
+              <div class="stat-label">Client timeline clarity</div>
+              <p class="metric-note">Structured workflow states make progress easier to understand.</p>
+            </article>
+            <article class="stat-card" data-reveal>
+              <span class="stat-value" data-stat-target="28" data-stat-suffix="+">0+</span>
+              <div class="stat-label">Trusted vendor lanes</div>
+              <p class="metric-note">Production, decor, venue, and guest-experience coordination paths.</p>
+            </article>
+            <article class="stat-card" data-reveal>
+              <span class="stat-value" data-stat-target="14" data-stat-suffix="d">0d</span>
+              <div class="stat-label">Average planning sprint</div>
+              <p class="metric-note">From initial discovery to a clearer proposal direction.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="testimonials">
+        <div class="container testimonials-grid">
+          <article class="testimonial-copy" data-reveal>
+            <div class="section-tag">Testimonials</div>
+            <h2>Clients remember the atmosphere. They also remember how smooth it felt.</h2>
+            <p>
+              Strong event work is emotional on the surface and operational underneath. These stories reflect both.
+            </p>
+
+            <div class="testimonial-stack">
+              <div class="timeline-item">
+                <div>
+                  <strong>Pre-event calm</strong>
+                  <span>Consultations and budget framing reduce uncertainty before execution begins.</span>
+                </div>
+                <span>Step 1</span>
+              </div>
+              <div class="timeline-item">
+                <div>
+                  <strong>Clear working rhythm</strong>
+                  <span>Updates, assignments, and next steps stay visible instead of trapped in message threads.</span>
+                </div>
+                <span>Step 2</span>
+              </div>
+              <div class="timeline-item">
+                <div>
+                  <strong>Confident delivery</strong>
+                  <span>When the structure is strong, the guest experience has room to feel effortless.</span>
+                </div>
+                <span>Step 3</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="testimonial-quote" data-reveal>
+            <div class="quote-mark">&ldquo;</div>
+            <p class="testimonial-text" data-testimonial-text></p>
+            <div class="testimonial-author">
+              <div>
+                <strong data-testimonial-name></strong>
+                <div class="testimonial-role" data-testimonial-role></div>
+              </div>
+              <div class="testimonial-dots" aria-label="Testimonial navigation">
+                <button class="testimonial-dot is-active" type="button" data-testimonial-dot="0" aria-pressed="true"></button>
+                <button class="testimonial-dot" type="button" data-testimonial-dot="1" aria-pressed="false"></button>
+                <button class="testimonial-dot" type="button" data-testimonial-dot="2" aria-pressed="false"></button>
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="section" id="consultation">
+        <div class="container">
+          <div class="cta-panel" data-reveal>
+            <div class="cta-copy">
+              <div class="section-tag">Booking CTA</div>
+              <h2>Ready to turn a broad event idea into a managed plan?</h2>
+              <p>
+                Start with a booking request, schedule your consultation, and let the workflow move into structured
+                review, estimation, and planning from there.
+              </p>
+
+              <div class="hero-actions">
+                <a class="button" href="./booking.html">Submit a Booking Request</a>
+                <a class="button-outline" href="./register.html">Create an Account</a>
+              </div>
+            </div>
+
+            <ul class="cta-checklist">
+              <li>Capture event goals, scale, and timeline through a focused booking entry point.</li>
+              <li>Move into consultations, quotes, and agreements with clearer status visibility over time.</li>
+              <li>Reuse the same account flow for booking progress, organizer coordination, and future dashboards.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-panel" data-reveal>
+          <div class="footer-grid">
+            <div class="footer-copy">
+              <div class="footer-label">VRR Events</div>
+              <div class="footer-brand">Intentional planning for celebrations, showcases, and everything in between.</div>
+              <p>
+                Phase 6 establishes the public landing experience. Booking interactions, portfolio depth, and
+                analytics-backed dashboards continue in upcoming phases.
+              </p>
+            </div>
+
+            <nav class="footer-nav" aria-label="Footer navigation">
+              <a href="#services">Services</a>
+              <a href="#portfolio">Portfolio</a>
+              <a href="#results">Results</a>
+              <a href="./login.html">Log In</a>
+              <a href="./booking.html">Book Now</a>
+            </nav>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </div>
+  <script src="./js/landing.js"></script>
 </body>
 </html>

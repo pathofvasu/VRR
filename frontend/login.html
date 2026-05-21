@@ -4,11 +4,81 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>VRR Events | Login</title>
+  <link rel="stylesheet" href="./css/auth.css">
 </head>
 <body>
-  <main>
-    <h1>Login</h1>
-    <p>Authentication interface scaffold created in Phase 1. Functional UI arrives in Phase 5.</p>
+  <main class="auth-shell">
+    <div class="auth-layout">
+      <section class="brand-panel" aria-labelledby="login-brand-title">
+        <div class="eyebrow">Client Access</div>
+        <h1 id="login-brand-title">Step into every event with a clearer command center.</h1>
+        <p>
+          Sign in to view booking progress, stay aligned with your event timeline, and keep every consultation,
+          quote, and milestone within easy reach.
+        </p>
+        <div class="feature-grid">
+          <article class="feature-card">
+            <strong>Booking visibility</strong>
+            <span>Track status changes from request submission to final execution.</span>
+          </article>
+          <article class="feature-card">
+            <strong>Faster coordination</strong>
+            <span>Keep appointments, planning updates, and next actions in one place.</span>
+          </article>
+          <article class="feature-card">
+            <strong>Secure sessions</strong>
+            <span>JWT-based sign-in keeps the browser session ready for future protected views.</span>
+          </article>
+          <article class="feature-card">
+            <strong>Admin-ready foundation</strong>
+            <span>The same auth flow will power organizer and admin access in later phases.</span>
+          </article>
+        </div>
+      </section>
+
+      <section class="form-panel" aria-labelledby="login-title">
+        <div class="panel-header">
+          <h2 id="login-title">Log in to VRR Events</h2>
+          <p>Use the backend API from Phase 4 and store your session locally for dashboard access.</p>
+        </div>
+
+        <div class="status-banner" data-status-banner aria-live="polite"></div>
+
+        <form class="auth-form" data-auth-form="login" novalidate>
+          <div class="field-group" data-field-group="apiBaseUrl">
+            <label for="apiBaseUrl">Backend API Base URL</label>
+            <input id="apiBaseUrl" name="apiBaseUrl" type="url" placeholder="http://localhost:5000/api/v1" autocomplete="off">
+            <p class="field-help">Serve the frontend from `http://localhost:5500` or `http://127.0.0.1:5500` to match the backend CORS defaults.</p>
+            <div class="field-error" data-field-error="apiBaseUrl" aria-live="polite"></div>
+          </div>
+
+          <div class="field-group" data-field-group="email">
+            <label for="email">Email Address</label>
+            <input id="email" name="email" type="email" placeholder="you@example.com" autocomplete="email">
+            <div class="field-error" data-field-error="email" aria-live="polite"></div>
+          </div>
+
+          <div class="field-group" data-field-group="password">
+            <label for="password">Password</label>
+            <div class="inline-input">
+              <input id="password" name="password" type="password" placeholder="Enter your password" autocomplete="current-password">
+              <button class="ghost-button" type="button" data-toggle-password="password">Show</button>
+            </div>
+            <div class="field-error" data-field-error="password" aria-live="polite"></div>
+          </div>
+
+          <div class="auth-actions">
+            <button class="primary-button" type="submit" data-submit-button>Log In</button>
+            <a class="secondary-button dashboard-link" href="./register.html">Create Account</a>
+          </div>
+
+          <p class="auth-footer">
+            New to VRR Events? <a href="./register.html">Register your account here</a>.
+          </p>
+        </form>
+      </section>
+    </div>
   </main>
+  <script type="module" src="./js/login.js"></script>
 </body>
 </html>

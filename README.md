@@ -1,6 +1,6 @@
 # VRR Events
 
-VRR Events is a production-oriented full-stack event management web application being built phase by phase. The repository now includes the scaffold, the Express backend foundation, validated MongoDB environment configuration, and JWT-based backend authentication.
+VRR Events is a production-oriented full-stack event management web application being built phase by phase. The repository now includes the scaffold, the Express backend foundation, validated MongoDB environment configuration, JWT-based backend authentication, frontend authentication pages, and a full public landing page experience.
 
 ## Current Phase
 
@@ -8,6 +8,8 @@ VRR Events is a production-oriented full-stack event management web application 
 - Phase 2: Backend Setup & Express Server
 - Phase 3: MongoDB Connection & Environment Variables
 - Phase 4: Authentication System
+- Phase 5: Frontend Authentication Pages
+- Phase 6: Landing Page Development
 
 ## Completed Modules
 
@@ -43,6 +45,22 @@ VRR Events is a production-oriented full-stack event management web application 
 - Added JWT token generation and protected-route middleware
 - Added authenticated profile retrieval via `/api/v1/auth/me`
 - Added JWT environment configuration requirements
+
+### Phase 5
+
+- Added login and register pages built with HTML, CSS, and vanilla JavaScript
+- Added client-side validation for backend URL, name, email, password, and password confirmation
+- Added frontend auth modules for API requests, token storage, and session guards
+- Added local-storage session persistence and sign-out handling
+- Added a lightweight authenticated dashboard handoff page for session verification
+
+### Phase 6
+
+- Replaced the landing-page placeholder with a full marketing homepage
+- Added hero, services, portfolio, counters, testimonials, and booking CTA sections
+- Added responsive navigation and mobile menu behavior
+- Added animated stats, reveal-on-scroll effects, and rotating testimonials
+- Added dedicated landing-page CSS and JavaScript assets
 
 ## Project Structure
 
@@ -87,7 +105,19 @@ VRR/
 |   |-- assets/
 |   |-- components/
 |   |-- css/
+|   |   |-- auth.css
+|   |   `-- landing.css
 |   |-- js/
+|   |   |-- auth-api.js
+|   |   |-- auth-config.js
+|   |   |-- auth-storage.js
+|   |   |-- auth-ui.js
+|   |   |-- auth-validation.js
+|   |   |-- dashboard.js
+|   |   |-- landing.js
+|   |   |-- login.js
+|   |   |-- package.json
+|   |   `-- register.js
 |   |-- booking.html
 |   |-- dashboard.html
 |   |-- index.html
@@ -127,7 +157,21 @@ VRR/
    npm.cmd run dev
    ```
 
-7. Verify the backend health endpoint:
+7. Serve the frontend from a local web server that uses `http://localhost:5500` or `http://127.0.0.1:5500`.
+
+   Example options:
+   - VS Code Live Server on port `5500`
+   - any static server configured to use port `5500`
+
+8. Open the authentication pages in your browser:
+
+   ```text
+   http://localhost:5500/index.html
+   http://localhost:5500/login.html
+   http://localhost:5500/register.html
+   ```
+
+9. Verify the backend health endpoint:
 
    ```text
    GET http://localhost:5000/api/v1/health
@@ -140,8 +184,8 @@ VRR/
 
 ## Modules Status
 
-- Landing page: UI pending
-- Authentication: backend complete, frontend pending
+- Landing page: complete
+- Authentication: backend and frontend complete
 - Booking system: pending
 - Admin dashboard: pending
 - Organizer dashboard: pending
@@ -166,6 +210,24 @@ VRR/
 - `GET /api/v1/auth/me`
   Returns the currently authenticated user profile when a valid Bearer token is supplied.
 
+## Frontend Auth Pages
+
+- `frontend/login.html`
+  Logs an existing user in and stores the JWT session in browser local storage.
+- `frontend/register.html`
+  Creates a client account, validates form inputs, and stores the returned JWT session.
+- `frontend/dashboard.html`
+  Confirms the stored session by calling `/api/v1/auth/me` and allows sign-out.
+
+## Landing Page
+
+- `frontend/index.html`
+  Public-facing homepage with hero, service overview, portfolio showcase, counters, testimonials, and booking CTA.
+- `frontend/css/landing.css`
+  Dedicated visual system and responsive layout for the landing page.
+- `frontend/js/landing.js`
+  Handles stat animations, reveal effects, testimonial rotation, and mobile navigation behavior.
+
 ## Environment Variables
 
 Configured in `backend/.env`:
@@ -184,11 +246,17 @@ Configured in `backend/.env`:
 3. Start MongoDB locally or prepare a MongoDB Atlas URI.
 4. Add a `JWT_SECRET` to `backend/.env`.
 5. Run `npm.cmd run dev`.
-6. Call `POST /api/v1/auth/register` with name, email, and password.
-7. Call `POST /api/v1/auth/login` with the same credentials.
-8. Use the returned token as `Authorization: Bearer <token>` when calling `GET /api/v1/auth/me`.
-9. Confirm `GET /api/v1/health` still reports the expected health response.
-10. Confirm startup fails clearly if `JWT_SECRET` or `MONGODB_URI` is missing.
+6. Serve `frontend/` on `http://localhost:5500` or `http://127.0.0.1:5500`.
+7. Open `index.html` and confirm the public landing page renders with all requested sections.
+8. Verify the mobile navigation toggle works on a narrow viewport.
+9. Scroll through the page and confirm reveal animations and counter animations trigger correctly.
+10. Confirm testimonial rotation works and the dot controls switch testimonials.
+11. Open `register.html`, create an account, and confirm you are redirected to `dashboard.html`.
+12. Open `login.html`, sign in with a valid account, and confirm the JWT session is stored locally.
+13. Use the dashboard page to confirm profile retrieval and sign-out behavior.
+14. Confirm invalid frontend inputs show inline validation errors before the request is sent.
+15. Confirm `GET /api/v1/health` still reports the expected health response.
+16. Confirm startup fails clearly if `JWT_SECRET` or `MONGODB_URI` is missing.
 
 ## Phase Notes
 
@@ -196,4 +264,7 @@ Configured in `backend/.env`:
 - The backend now requires a valid `MONGODB_URI` before startup.
 - Phase 4 adds JWT-based authentication for client accounts.
 - Admin and organizer authorization can now build on the shared `role` field and `protect` middleware.
+- Phase 5 adds browser-side session management using local storage.
+- Frontend auth expects the API base URL to default to `http://localhost:5000/api/v1`.
+- Phase 6 adds the public-facing marketing experience for visitor discovery and booking conversion.
 - Authentication, booking logic, and dashboards are intentionally deferred to later phases.
