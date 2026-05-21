@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VRR Events | Budget Estimates</title>
+  <link rel="stylesheet" href="./css/auth.css">
+  <link rel="stylesheet" href="./css/estimates.css">
+</head>
+<body>
+  <main class="estimates-shell">
+    <section class="estimates-hero" aria-labelledby="estimates-title">
+      <div>
+        <p class="estimates-kicker">Budget Desk</p>
+        <h1 id="estimates-title">Budget Estimates</h1>
+        <p>
+          Review generated quotations, package details, proposal notes, taxes, discounts, and
+          line-item estimates attached to your accessible bookings.
+        </p>
+      </div>
+      <aside class="estimates-profile" aria-label="Signed in account">
+        <span data-user-role>Checking access...</span>
+        <strong data-user-name>Loading...</strong>
+        <small data-user-email>Loading...</small>
+        <a class="secondary-button estimates-link" href="#" data-dashboard-link>Dashboard</a>
+        <button class="secondary-button" type="button" data-sign-out>Sign Out</button>
+      </aside>
+    </section>
+
+    <div class="status-banner" data-status-banner aria-live="polite"></div>
+
+    <section class="estimates-panel" aria-labelledby="estimate-list-title">
+      <div class="estimates-panel-header">
+        <div>
+          <p class="estimates-kicker">Generated Proposals</p>
+          <h2 id="estimate-list-title">Booking estimates</h2>
+        </div>
+        <button class="secondary-button" type="button" data-refresh-estimates>Refresh Estimates</button>
+      </div>
+
+      <div class="estimate-list" data-estimate-list>
+        <p class="estimate-empty">Loading estimates...</p>
+      </div>
+    </section>
+  </main>
+
+  <script type="module" src="./js/estimates.js"></script>
+</body>
+</html>

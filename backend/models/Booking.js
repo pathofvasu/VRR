@@ -176,6 +176,50 @@ const quotationSchema = new mongoose.Schema(
   }
 );
 
+const agreementSchema = new mongoose.Schema(
+  {
+    status: {
+      type: String,
+      enum: ["generated", "confirmed"],
+      default: "generated",
+    },
+    version: {
+      type: Number,
+      default: 1,
+      min: 1,
+    },
+    fileName: {
+      type: String,
+      trim: true,
+      maxlength: 180,
+    },
+    filePath: {
+      type: String,
+      trim: true,
+      maxlength: 500,
+    },
+    generatedBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      default: null,
+    },
+    generatedAt: {
+      type: Date,
+    },
+    confirmedBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      default: null,
+    },
+    confirmedAt: {
+      type: Date,
+    },
+  },
+  {
+    _id: false,
+  }
+);
+
 const consultationPreferenceSchema = new mongoose.Schema(
   {
     requested: {
@@ -283,6 +327,10 @@ const bookingSchema = new mongoose.Schema(
     },
     quotation: {
       type: quotationSchema,
+      default: null,
+    },
+    agreement: {
+      type: agreementSchema,
       default: null,
     },
     servicesRequested: {

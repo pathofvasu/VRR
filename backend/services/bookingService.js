@@ -297,6 +297,22 @@ const buildAdminBookingFilters = (query) => {
   return filters;
 };
 
+const buildAgreementResponse = (agreement) => {
+  if (!agreement) {
+    return null;
+  }
+
+  return {
+    status: agreement.status,
+    version: agreement.version,
+    fileName: agreement.fileName,
+    generatedBy: agreement.generatedBy,
+    generatedAt: agreement.generatedAt,
+    confirmedBy: agreement.confirmedBy,
+    confirmedAt: agreement.confirmedAt,
+  };
+};
+
 const buildBookingResponse = (booking) => ({
   id: booking._id.toString(),
   bookingCode: booking.bookingCode,
@@ -311,6 +327,8 @@ const buildBookingResponse = (booking) => ({
   guestCount: booking.guestCount,
   location: booking.location,
   budget: booking.budget,
+  quotation: booking.quotation,
+  agreement: buildAgreementResponse(booking.agreement),
   servicesRequested: booking.servicesRequested,
   contactPhone: booking.contactPhone,
   consultationPreference: booking.consultationPreference,

@@ -1,4 +1,9 @@
 const Booking = require("../models/Booking");
+const {
+  acceptBookingQuotation,
+  confirmBookingAgreement,
+  getAgreementDownload,
+} = require("../services/agreementService");
 const asyncHandler = require("../utils/asyncHandler");
 const createHttpError = require("../utils/createHttpError");
 const {
@@ -82,9 +87,51 @@ const getWorkflowStates = asyncHandler(async (_req, res) => {
   });
 });
 
+const acceptQuote = asyncHandler(async (req, res) => {
+  const booking = await acceptBookingQuotation({
+    user: req.user,
+    bookingId: req.params.bookingId,
+  });
+
+  res.status(200).json({
+    success: true,
+    message: "Quotation accepted successfully.",
+    data: {
+      booking,
+    },
+  });
+});
+
+const downloadAgreement = asyncHandler(async (req, res) => {
+  const agreementDownload = await getAgreementDownload({
+    user: req.user,
+    bookingId: req.params.bookingId,
+  });
+
+  res.download(agreementDownload.filePath, agreementDownload.fileName);
+});
+
+const confirmAgreement = asyncHandler(async (req, res) => {
+  const booking = await confirmBookingAgreement({
+    user: req.user,
+    bookingId: req.params.bookingId,
+  });
+
+  res.status(200).json({
+    success: true,
+    message: "Agreement confirmed successfully.",
+    data: {
+      booking,
+    },
+  });
+});
+
 module.exports = {
   createBooking,
   listBookings,
   getBookingById,
   getWorkflowStates,
+  acceptQuote,
+  downloadAgreement,
+  confirmAgreement,
 };

@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VRR Events | Analytics</title>
+  <link rel="stylesheet" href="./css/auth.css">
+  <link rel="stylesheet" href="./css/analytics.css">
+</head>
+<body>
+  <main class="analytics-shell">
+    <section class="analytics-hero" aria-labelledby="analytics-title">
+      <div>
+        <p class="analytics-kicker">Performance Room</p>
+        <h1 id="analytics-title">Analytics Dashboard</h1>
+        <p>
+          Track booking demand, completed events, quote value, organizer workload, and delivery
+          performance across the VRR Events pipeline.
+        </p>
+      </div>
+      <aside class="analytics-profile" aria-label="Signed in admin">
+        <span data-user-role>Checking access...</span>
+        <strong data-user-name>Loading...</strong>
+        <small data-user-email>Loading...</small>
+        <a class="secondary-button analytics-link" href="./dashboard.html">Admin Dashboard</a>
+        <button class="secondary-button" type="button" data-sign-out>Sign Out</button>
+      </aside>
+    </section>
+
+    <div class="status-banner" data-status-banner aria-live="polite"></div>
+
+    <section class="analytics-grid analytics-grid--metrics" aria-label="Analytics metrics">
+      <article class="analytics-card">
+        <span>Total Bookings</span>
+        <strong data-metric="totalBookings">--</strong>
+        <small>All submitted requests</small>
+      </article>
+      <article class="analytics-card">
+        <span>Completed Events</span>
+        <strong data-metric="completedEvents">--</strong>
+        <small>Closed event workflows</small>
+      </article>
+      <article class="analytics-card">
+        <span>Upcoming Events</span>
+        <strong data-metric="upcomingBookings">--</strong>
+        <small>Scheduled or in-progress</small>
+      </article>
+      <article class="analytics-card">
+        <span>Quoted Revenue</span>
+        <strong data-completed-metric="quotedRevenue">--</strong>
+        <small>Completed quoted total</small>
+      </article>
+      <article class="analytics-card">
+        <span>Avg Quote</span>
+        <strong data-completed-metric="averageQuoteValue">--</strong>
+        <small>Completed quoted average</small>
+      </article>
+    </section>
+
+    <section class="analytics-layout">
+      <article class="analytics-panel" aria-labelledby="monthly-title">
+        <div class="analytics-panel-header">
+          <div>
+            <p class="analytics-kicker">Monthly Stats</p>
+            <h2 id="monthly-title">Booking demand</h2>
+          </div>
+        </div>
+        <div class="analytics-bars" data-monthly-bookings></div>
+      </article>
+
+      <article class="analytics-panel" aria-labelledby="completed-title">
+        <div class="analytics-panel-header">
+          <div>
+            <p class="analytics-kicker">Completed Events</p>
+            <h2 id="completed-title">Delivery trend</h2>
+          </div>
+        </div>
+        <div class="analytics-bars" data-completed-events></div>
+      </article>
+    </section>
+
+    <section class="analytics-layout analytics-layout--wide">
+      <article class="analytics-panel" aria-labelledby="organizer-title">
+        <div class="analytics-panel-header">
+          <div>
+            <p class="analytics-kicker">Organizer Analytics</p>
+            <h2 id="organizer-title">Workload and performance</h2>
+          </div>
+        </div>
+        <div class="analytics-table-wrap">
+          <table class="analytics-table">
+            <thead>
+              <tr>
+                <th scope="col">Organizer</th>
+                <th scope="col">Assigned</th>
+                <th scope="col">Scheduled</th>
+                <th scope="col">In Progress</th>
+                <th scope="col">Completed</th>
+                <th scope="col">Completion</th>
+                <th scope="col">Quoted Value</th>
+              </tr>
+            </thead>
+            <tbody data-organizer-analytics>
+              <tr>
+                <td colspan="7">Loading organizer analytics...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </article>
+
+      <article class="analytics-panel" aria-labelledby="recent-completed-title">
+        <div class="analytics-panel-header">
+          <div>
+            <p class="analytics-kicker">Recently Completed</p>
+            <h2 id="recent-completed-title">Closed events</h2>
+          </div>
+        </div>
+        <div class="completed-list" data-recent-completed></div>
+      </article>
+    </section>
+  </main>
+
+  <script type="module" src="./js/analytics.js"></script>
+</body>
+</html>

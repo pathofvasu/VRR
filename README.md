@@ -1,6 +1,6 @@
 # VRR Events
 
-VRR Events is a production-oriented full-stack event management web application being built phase by phase. The repository now includes the scaffold, the Express backend foundation, validated MongoDB environment configuration, JWT-based backend authentication, frontend authentication pages, a full public landing page, booking workflow APIs, booking request UI, admin dashboard, organizer module, and appointment scheduling with conflict detection.
+VRR Events is a production-oriented full-stack event management web application being built phase by phase. The repository now includes the scaffold, authentication, booking workflow APIs, booking request UI, admin dashboard, organizer module, appointment scheduling, budget estimation, agreement PDF generation, and an expanded analytics dashboard.
 
 ## Current Phase
 
@@ -16,6 +16,9 @@ VRR Events is a production-oriented full-stack event management web application 
 - Phase 10: Admin Dashboard Frontend
 - Phase 11: Organizer Module
 - Phase 12: Appointment Scheduling System
+- Phase 13: Budget Estimation System
+- Phase 14: Agreement PDF System
+- Phase 15: Analytics Dashboard
 
 ## Completed Modules
 
@@ -123,6 +126,34 @@ VRR Events is a production-oriented full-stack event management web application 
 - Added appointment links from admin dashboard, organizer dashboard, and booking flow
 - Added client booking-list API helper for appointment scheduling
 
+### Phase 13
+
+- Added quotation fields to the booking model for package tier, line items, subtotal, service fee, tax, discount, total, validity, and proposal notes
+- Added a quotation service with package pricing, service pricing, event complexity multipliers, tax, and discount calculations
+- Added admin-only quotation catalog and quote-generation APIs
+- Added admin dashboard controls for package selection, discount input, proposal notes, and quote generation
+- Exposed generated quotations through booking responses
+- Added a shared budget estimates page for admins, organizers, and clients
+- Added estimate navigation links from admin dashboard, organizer dashboard, and booking flow
+
+### Phase 14
+
+- Added agreement metadata to bookings, including status, version, file name, generated date, and confirmation date
+- Added quote acceptance flow to move bookings from `QUOTE_GENERATED` to `QUOTE_ACCEPTED`
+- Added admin-only agreement PDF generation after quote acceptance
+- Added dependency-free PDF creation utility for generated agreement files
+- Added protected agreement PDF download functionality using authenticated requests
+- Added agreement confirmation flow to move bookings from `AGREEMENT_GENERATED` to `EVENT_SCHEDULED`
+- Added agreement workflow actions to the budget estimates page
+
+### Phase 15
+
+- Added completed-event analytics with monthly completion trends, guest counts, quoted revenue, and average quote value
+- Added organizer performance analytics with assigned, scheduled, in-progress, completed, completion rate, guest load, and quoted value metrics
+- Added admin analytics endpoints for completed events and organizer performance
+- Added a dedicated analytics dashboard page with metrics, trend bars, organizer table, and recent completed-event list
+- Added admin dashboard navigation to the analytics page
+
 ## Project Structure
 
 ```text
@@ -164,10 +195,12 @@ VRR/
 |   |   `-- .gitkeep
 |   |-- services/
 |   |   |-- adminService.js
+|   |   |-- agreementService.js
 |   |   |-- appointmentService.js
 |   |   |-- authService.js
 |   |   |-- bookingService.js
 |   |   |-- organizerService.js
+|   |   |-- quotationService.js
 |   |   `-- .gitkeep
 |   |-- uploads/
 |   |   `-- .gitkeep
@@ -175,6 +208,7 @@ VRR/
 |       |-- asyncHandler.js
 |       |-- bookingWorkflow.js
 |       |-- createHttpError.js
+|       |-- pdfWriter.js
 |       |-- validators.js
 |       `-- .gitkeep
 |-- frontend/
@@ -182,13 +216,16 @@ VRR/
 |   |-- components/
 |   |-- css/
 |   |   |-- admin-dashboard.css
+|   |   |-- analytics.css
 |   |   |-- appointments.css
 |   |   |-- auth.css
 |   |   |-- booking.css
+|   |   |-- estimates.css
 |   |   |-- landing.css
 |   |   `-- organizer-dashboard.css
 |   |-- js/
 |   |   |-- admin-api.js
+|   |   |-- analytics.js
 |   |   |-- appointment-api.js
 |   |   |-- appointments.js
 |   |   |-- api-client.js
@@ -203,6 +240,7 @@ VRR/
 |   |   |-- booking.js
 |   |   |-- dashboard-routing.js
 |   |   |-- dashboard.js
+|   |   |-- estimates.js
 |   |   |-- landing.js
 |   |   |-- login.js
 |   |   |-- organizer-api.js
@@ -210,8 +248,10 @@ VRR/
 |   |   |-- package.json
 |   |   `-- register.js
 |   |-- booking.html
+|   |-- analytics.html
 |   |-- appointments.html
 |   |-- dashboard.html
+|   |-- estimates.html
 |   |-- index.html
 |   |-- login.html
 |   |-- organizer-dashboard.html
@@ -284,9 +324,9 @@ VRR/
 - Admin dashboard: backend and frontend complete
 - Organizer dashboard: backend and frontend complete
 - Appointment scheduling: backend and frontend complete
-- Budget estimation: pending
-- Agreement PDF generation: pending
-- Analytics dashboard: pending
+- Budget estimation: backend and frontend complete
+- Agreement PDF generation: backend and frontend complete
+- Analytics dashboard: backend and frontend complete
 - Workflow state management: pending
 
 ## APIs
@@ -325,6 +365,10 @@ VRR/
   Returns admin dashboard summary metrics and recent bookings.
 - `GET /api/v1/admin/analytics/monthly`
   Returns monthly booking creation and guest-count trends.
+- `GET /api/v1/admin/analytics/completed-events`
+  Returns completed-event trend data, quoted revenue, average quote value, and recent completed events.
+- `GET /api/v1/admin/analytics/organizers`
+  Returns organizer workload and performance metrics.
 - `GET /api/v1/organizer/assignments`
   Returns the authenticated organizer's assigned bookings and summary counts.
 - `GET /api/v1/organizer/progress-states`
@@ -339,6 +383,18 @@ VRR/
   Returns appointment types, modes, and statuses for frontend controls.
 - `PATCH /api/v1/appointments/:appointmentId/status`
   Updates the status of an accessible appointment.
+- `GET /api/v1/admin/quotations/catalog`
+  Returns package and service pricing metadata for admin quote controls.
+- `POST /api/v1/admin/bookings/:bookingId/quotation`
+  Generates and stores a quotation for a booking, then moves eligible bookings to `QUOTE_GENERATED`.
+- `POST /api/v1/bookings/:bookingId/quote/accept`
+  Accepts a generated quotation for an accessible booking and moves it to `QUOTE_ACCEPTED`.
+- `POST /api/v1/admin/bookings/:bookingId/agreement`
+  Generates an agreement PDF for a quote-accepted booking and moves it to `AGREEMENT_GENERATED`.
+- `GET /api/v1/bookings/:bookingId/agreement/download`
+  Downloads the generated agreement PDF for users with booking access.
+- `POST /api/v1/bookings/:bookingId/agreement/confirm`
+  Confirms a generated agreement and moves the booking to `EVENT_SCHEDULED`.
 
 ## Frontend Auth Pages
 
@@ -352,6 +408,10 @@ VRR/
   Provides the organizer dashboard when the stored session belongs to an organizer account.
 - `frontend/appointments.html`
   Provides the shared role-aware appointment scheduling and appointment list experience.
+- `frontend/estimates.html`
+  Provides role-aware read-only budget estimate and quotation review.
+- `frontend/analytics.html`
+  Provides admin-only analytics for monthly stats, completed events, and organizer performance.
 
 ## Landing Page
 
@@ -448,6 +508,57 @@ VRR/
 - `frontend/js/appointments.js`
   Loads role-aware bookings, organizers, appointments, catalogs, schedule submissions, and appointment status updates.
 
+## Budget Estimation
+
+- `backend/services/quotationService.js`
+  Generates package-based quotations using event type, guest count, requested services, service fee, discount, and tax calculations.
+- `backend/models/Booking.js`
+  Stores the generated quotation directly on the booking record.
+- `backend/controllers/adminController.js`
+  Exposes admin quotation catalog and quote generation handlers.
+- `backend/routes/adminRoutes.js`
+  Mounts quotation endpoints under `/api/v1/admin`.
+- `frontend/dashboard.html`
+  Provides admin controls to generate quotations from booking table rows.
+- `frontend/estimates.html`
+  Displays generated budget estimates and line-item proposal details for accessible bookings.
+- `frontend/css/estimates.css`
+  Dedicated responsive styling for estimate review.
+- `frontend/js/estimates.js`
+  Loads role-aware bookings and renders generated quotations.
+
+## Agreement PDF System
+
+- `backend/services/agreementService.js`
+  Handles quote acceptance, agreement PDF generation, protected download lookup, and agreement confirmation.
+- `backend/utils/pdfWriter.js`
+  Creates a valid lightweight PDF buffer without external package dependencies.
+- `backend/models/Booking.js`
+  Stores generated agreement metadata on the booking record.
+- `backend/controllers/adminController.js`
+  Exposes admin agreement generation for quote-accepted bookings.
+- `backend/controllers/bookingController.js`
+  Exposes quote acceptance, agreement download, and agreement confirmation for accessible bookings.
+- `backend/uploads/agreements/`
+  Stores generated PDF files locally during development.
+- `frontend/estimates.html`
+  Allows users to accept quotes, download generated agreement PDFs, and confirm agreements.
+
+## Analytics Dashboard
+
+- `backend/services/adminService.js`
+  Aggregates completed-event analytics and organizer performance analytics.
+- `backend/controllers/adminController.js`
+  Exposes completed-event and organizer analytics responses.
+- `backend/routes/adminRoutes.js`
+  Mounts analytics endpoints under `/api/v1/admin/analytics`.
+- `frontend/analytics.html`
+  Admin-only analytics workspace with metrics, monthly bars, completed-event trends, organizer table, and recent completed events.
+- `frontend/css/analytics.css`
+  Dedicated responsive styling for analytics views.
+- `frontend/js/analytics.js`
+  Loads admin analytics APIs and renders metrics, charts, tables, and access guards.
+
 ## Environment Variables
 
 Configured in `backend/.env`:
@@ -504,8 +615,24 @@ Configured in `backend/.env`:
 41. Open `frontend/appointments.html` as a client and confirm only client-owned booking appointments are visible.
 42. Update appointment status to `completed` or `cancelled` and confirm the list refreshes.
 43. Confirm invalid appointment inputs, past start times, and invalid durations are rejected.
-44. Confirm `GET /api/v1/health` still reports the expected health response.
-45. Confirm startup fails clearly if `JWT_SECRET` or `MONGODB_URI` is missing.
+44. Open the admin dashboard and generate a quotation for a booking using package tier, optional discount, and proposal notes.
+45. Confirm the booking workflow moves to `QUOTE_GENERATED` when eligible.
+46. Open `frontend/estimates.html` as the booking client and confirm the estimate appears with line items and total.
+47. Open `frontend/estimates.html` as an admin and confirm generated estimates for accessible bookings are visible.
+48. Confirm invalid package tiers and negative discounts are rejected by the backend.
+49. Accept a generated quote from `frontend/estimates.html` and confirm the workflow moves to `QUOTE_ACCEPTED`.
+50. Log in as admin, generate an agreement from the admin dashboard, and confirm the workflow moves to `AGREEMENT_GENERATED`.
+51. Return to `frontend/estimates.html`, download the agreement PDF, and confirm a PDF file is produced.
+52. Confirm the agreement from `frontend/estimates.html` and verify the workflow moves to `EVENT_SCHEDULED`.
+53. Confirm agreement generation is rejected before quote acceptance.
+54. Confirm agreement download is rejected for users without access to the booking.
+55. Open `frontend/analytics.html` as an admin and confirm metrics load.
+56. Confirm monthly booking bars render from `GET /api/v1/admin/analytics/monthly`.
+57. Confirm completed-event trend and quoted value metrics render from `GET /api/v1/admin/analytics/completed-events`.
+58. Confirm organizer workload and completion rates render from `GET /api/v1/admin/analytics/organizers`.
+59. Log in as a non-admin and confirm `analytics.html` redirects away.
+60. Confirm `GET /api/v1/health` still reports the expected health response.
+61. Confirm startup fails clearly if `JWT_SECRET` or `MONGODB_URI` is missing.
 
 ## Phase Notes
 
@@ -522,4 +649,7 @@ Configured in `backend/.env`:
 - Phase 10 adds the frontend admin dashboard for analytics, filtering, assignment, pagination, and workflow updates.
 - Phase 11 adds organizer assignment views and assigned-event progress updates.
 - Phase 12 adds role-aware appointment scheduling, status management, and organizer conflict detection.
-- Quotation, agreement, notifications, and deployment work are intentionally deferred to later phases.
+- Phase 13 adds admin quotation generation and role-aware budget estimate review.
+- Phase 14 adds agreement PDF generation, download, and confirmation workflow.
+- Phase 15 adds completed-event, monthly, and organizer analytics dashboards.
+- Notifications and deployment work are intentionally deferred to later phases.

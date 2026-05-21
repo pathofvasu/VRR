@@ -249,6 +249,128 @@ const getMonthlyBookingAnalytics = async () => {
   }));
 };
 
+const getCompletedEventAnalytics = async () => {
+  const today = new Date();
+  const rangeStart = new Date(Date.UTC(today.getUTCFullYear(), today.getUTCMonth() - 11, 1));
+
+  const [completedEvents, completedByMonth, quotedCompletedEvents] = await Promise.all([
+    Booking.find({ workflowState: BOOKING_WORKFLOW_STATES.EVENT_COMPLETED })
+      .sort({ workflowStateUpdatedAt: -1 })
+      .limit(10)
+      .populate(getBookingPopulateOptions()),
+    Booking.aggregate([
+      {
+        $match: {
+          workflowState: BOOKING_WORKFLOW_STATES.EVENT_COMPLETED,
+          workflowStateUpdatedAt: { $gte: rangeStart },
+        },
+      },
+      {
+        $group: {
+          _id: {
+            year: { $year: "$workflowStateUpdatedAt" },
+            month: { $month: "$workflowStateUpdatedAt" },
+          },
+          completedEvents: { $sum: 1 },
+          completedGuests: { $sum: "$guestCount" },
+        },
+      },
+      {
+        $sort: {
+          "_id.year": 1,
+          "_id.month": 1,
+        },
+      },
+    ]),
+    Booking.aggregate([
+      {
+        $match: {
+          workflowState: BOOKING_WORKFLOW_STATES.EVENT_COMPLETED,
+          "quotation.total": { $gt: 0 },
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          quotedRevenue: { $sum: "$quotation.total" },
+          averageQuoteValue: { $avg: "$quotation.total" },
+        },
+      },
+    ]),
+  ]);
+
+  const quoteSummary = quotedCompletedEvents[0] || {
+    quotedRevenue: 0,
+    averageQuoteValue: 0,
+  };
+
+  return {
+    completedEvents: completedEvents.map((booking) => buildBookingResponse(booking)),
+    completedByMonth: completedByMonth.map((entry) => ({
+      year: entry._id.year,
+      month: entry._id.month,
+      completedEvents: entry.completedEvents,
+      completedGuests: entry.completedGuests,
+    })),
+    quotedRevenue: Math.round(quoteSummary.quotedRevenue || 0),
+    averageQuoteValue: Math.round(quoteSummary.averageQuoteValue || 0),
+  };
+};
+
+const getOrganizerPerformanceAnalytics = async () => {
+  const organizers = await User.find({ role: "organizer" }).sort({ name: 1 });
+  const performance = await Booking.aggregate([
+    {
+      $match: {
+        assignedOrganizer: { $ne: null },
+      },
+    },
+    {
+      $group: {
+        _id: "$assignedOrganizer",
+        assignedBookings: { $sum: 1 },
+        completedEvents: {
+          $sum: {
+            $cond: [{ $eq: ["$workflowState", BOOKING_WORKFLOW_STATES.EVENT_COMPLETED] }, 1, 0],
+          },
+        },
+        inProgressEvents: {
+          $sum: {
+            $cond: [{ $eq: ["$workflowState", BOOKING_WORKFLOW_STATES.EVENT_IN_PROGRESS] }, 1, 0],
+          },
+        },
+        scheduledEvents: {
+          $sum: {
+            $cond: [{ $eq: ["$workflowState", BOOKING_WORKFLOW_STATES.EVENT_SCHEDULED] }, 1, 0],
+          },
+        },
+        totalGuests: { $sum: "$guestCount" },
+        quotedRevenue: { $sum: { $ifNull: ["$quotation.total", 0] } },
+      },
+    },
+  ]);
+
+  const performanceMap = new Map(performance.map((entry) => [String(entry._id), entry]));
+
+  return organizers.map((organizer) => {
+    const entry = performanceMap.get(String(organizer._id)) || {};
+    const assignedBookings = entry.assignedBookings || 0;
+    const completedEvents = entry.completedEvents || 0;
+
+    return {
+      ...organizer.toSafeObject(),
+      assignedBookings,
+      completedEvents,
+      inProgressEvents: entry.inProgressEvents || 0,
+      scheduledEvents: entry.scheduledEvents || 0,
+      totalGuests: entry.totalGuests || 0,
+      quotedRevenue: Math.round(entry.quotedRevenue || 0),
+      completionRate:
+        assignedBookings > 0 ? Math.round((completedEvents / assignedBookings) * 100) : 0,
+    };
+  });
+};
+
 module.exports = {
   listAdminBookings,
   getAdminBookingById,
@@ -257,4 +379,6 @@ module.exports = {
   listOrganizers,
   getAnalyticsOverview,
   getMonthlyBookingAnalytics,
+  getCompletedEventAnalytics,
+  getOrganizerPerformanceAnalytics,
 };

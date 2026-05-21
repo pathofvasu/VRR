@@ -4,6 +4,9 @@ import {
   fetchAdminBookings,
   fetchAdminMonthlyAnalytics,
   fetchAdminOrganizers,
+  fetchQuotationCatalog,
+  generateBookingAgreement,
+  generateBookingQuotation,
   updateBookingWorkflowState,
 } from "./admin-api.js";
 import { fetchCurrentUser } from "./auth-api.js";
@@ -18,6 +21,7 @@ const state = {
   user: session?.user || null,
   workflowStates: [],
   organizers: [],
+  quotationPackages: [],
   bookings: [],
   pagination: {
     page: 1,
@@ -74,6 +78,13 @@ const formatEventType = (value) =>
         .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
         .join(" ")
     : "Event";
+
+const formatCurrency = (value, currency = "INR") =>
+  new Intl.NumberFormat("en-IN", {
+    style: "currency",
+    currency,
+    maximumFractionDigits: 0,
+  }).format(Number(value || 0));
 
 const escapeHtml = (value) =>
   String(value ?? "")
@@ -201,6 +212,14 @@ const buildWorkflowOptions = (currentWorkflowState) =>
     })
     .join("");
 
+const buildPackageOptions = (selectedPackage = "signature") =>
+  state.quotationPackages
+    .map((quotePackage) => {
+      const isSelected = quotePackage.key === selectedPackage ? "selected" : "";
+      return `<option value="${escapeHtml(quotePackage.key)}" ${isSelected}>${escapeHtml(quotePackage.label)}</option>`;
+    })
+    .join("");
+
 const renderBookings = () => {
   if (state.bookings.length === 0) {
     nodes.bookingTableBody.innerHTML = `
@@ -234,6 +253,11 @@ const renderBookings = () => {
             <td>
               <span class="workflow-pill">${escapeHtml(booking.workflowStateLabel || getWorkflowLabel(booking.workflowState))}</span>
               <span class="booking-subtext">Updated ${formatDate(booking.workflowStateUpdatedAt)}</span>
+              ${
+                booking.quotation
+                  ? `<span class="booking-subtext">Quote: ${formatCurrency(booking.quotation.total, booking.quotation.currency)}</span>`
+                  : '<span class="booking-subtext">Quote pending</span>'
+              }
             </td>
             <td>
               <span class="booking-title">${escapeHtml(booking.assignedOrganizer?.name || "Unassigned")}</span>
@@ -252,6 +276,17 @@ const renderBookings = () => {
                   <button class="secondary-button" type="button" data-assign-organizer="${escapeHtml(booking.id)}">Assign</button>
                   <button class="secondary-button" type="button" data-update-workflow="${escapeHtml(booking.id)}">Update</button>
                 </div>
+                <div class="quote-actions">
+                  <select class="booking-action-select" data-package-select="${escapeHtml(booking.id)}" aria-label="Quote package for ${escapeHtml(booking.bookingCode)}">
+                    ${buildPackageOptions(booking.quotation?.packageTier)}
+                  </select>
+                  <input class="booking-action-input" type="number" min="0" step="1000" data-discount-input="${escapeHtml(booking.id)}" placeholder="Discount">
+                  <textarea class="booking-action-note" data-proposal-input="${escapeHtml(booking.id)}" placeholder="Proposal notes"></textarea>
+                  <button class="secondary-button" type="button" data-generate-quote="${escapeHtml(booking.id)}">Generate Quote</button>
+                </div>
+                <button class="secondary-button" type="button" data-generate-agreement="${escapeHtml(booking.id)}">
+                  ${booking.agreement ? "Regenerate Agreement" : "Generate Agreement"}
+                </button>
               </div>
             </td>
           </tr>
@@ -340,13 +375,15 @@ const verifyAdminSession = async () => {
 };
 
 const loadCatalogs = async () => {
-  const [workflowResponse, organizerResponse] = await Promise.all([
+  const [workflowResponse, organizerResponse, quotationResponse] = await Promise.all([
     fetchWorkflowStates(),
     fetchAdminOrganizers(state.token),
+    fetchQuotationCatalog(state.token),
   ]);
 
   state.workflowStates = workflowResponse.data.workflowStates;
   state.organizers = organizerResponse.data.organizers;
+  state.quotationPackages = quotationResponse.data.packages;
   renderSelectOptions();
 };
 
@@ -372,13 +409,19 @@ const handleFilterSubmit = (event) => {
 const handleTableAction = async (event) => {
   const assignButton = event.target.closest("[data-assign-organizer]");
   const workflowButton = event.target.closest("[data-update-workflow]");
-  const bookingId = assignButton?.dataset.assignOrganizer || workflowButton?.dataset.updateWorkflow;
+  const quoteButton = event.target.closest("[data-generate-quote]");
+  const agreementButton = event.target.closest("[data-generate-agreement]");
+  const bookingId =
+    assignButton?.dataset.assignOrganizer ||
+    workflowButton?.dataset.updateWorkflow ||
+    quoteButton?.dataset.generateQuote ||
+    agreementButton?.dataset.generateAgreement;
 
   if (!bookingId) {
     return;
   }
 
-  const clickedButton = assignButton || workflowButton;
+  const clickedButton = assignButton || workflowButton || quoteButton || agreementButton;
   clickedButton.disabled = true;
 
   try {
@@ -402,6 +445,32 @@ const handleTableAction = async (event) => {
         note: getNoteForBooking(bookingId),
       });
       setStatusBanner("Workflow state updated.", "success");
+    }
+
+    if (quoteButton) {
+      const packageSelect = document.querySelector(`[data-package-select="${bookingId}"]`);
+      const discountInput = document.querySelector(`[data-discount-input="${bookingId}"]`);
+      const proposalInput = document.querySelector(`[data-proposal-input="${bookingId}"]`);
+
+      await generateBookingQuotation({
+        token: state.token,
+        bookingId,
+        payload: {
+          packageTier: packageSelect.value,
+          discount: discountInput.value,
+          proposalNotes: proposalInput.value,
+          validDays: 14,
+        },
+      });
+      setStatusBanner("Quotation generated and attached to the booking.", "success");
+    }
+
+    if (agreementButton) {
+      await generateBookingAgreement({
+        token: state.token,
+        bookingId,
+      });
+      setStatusBanner("Agreement PDF generated successfully.", "success");
     }
 
     await refreshDashboard();
