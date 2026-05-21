@@ -1,6 +1,6 @@
 # VRR Events
 
-VRR Events is a production-oriented full-stack event management web application being built phase by phase. The repository now includes the scaffold, the Express backend foundation, validated MongoDB environment configuration, JWT-based backend authentication, frontend authentication pages, a full public landing page, booking workflow backend APIs, and a real booking request frontend with login-return persistence.
+VRR Events is a production-oriented full-stack event management web application being built phase by phase. The repository now includes the scaffold, the Express backend foundation, validated MongoDB environment configuration, JWT-based backend authentication, frontend authentication pages, a full public landing page, booking workflow backend APIs, a real booking request frontend, and the admin backend needed for booking management and analytics.
 
 ## Current Phase
 
@@ -12,6 +12,7 @@ VRR Events is a production-oriented full-stack event management web application 
 - Phase 6: Landing Page Development
 - Phase 7: Booking System Backend
 - Phase 8: Booking Form Frontend
+- Phase 9: Admin Dashboard Backend
 
 ## Completed Modules
 
@@ -80,6 +81,14 @@ VRR Events is a production-oriented full-stack event management web application 
 - Added post-login redirect persistence so booking drafts survive authentication
 - Added workflow-state preview and post-submit confirmation UI
 
+### Phase 9
+
+- Added admin-only booking management APIs with filtering and pagination
+- Added organizer directory and booking-to-organizer assignment APIs
+- Added admin workflow-state update API with transition validation and history entries
+- Added analytics overview and monthly trend APIs for dashboard cards and charts
+- Added shared backend helpers for admin booking filters and workflow transition rules
+
 ## Project Structure
 
 ```text
@@ -94,6 +103,7 @@ VRR/
 |   |   |-- database.js
 |   |   `-- env.js
 |   |-- controllers/
+|   |   |-- adminController.js
 |   |   |-- authController.js
 |   |   |-- bookingController.js
 |   |   |-- healthController.js
@@ -108,11 +118,13 @@ VRR/
 |   |   |-- User.js
 |   |   `-- .gitkeep
 |   |-- routes/
+|   |   |-- adminRoutes.js
 |   |   |-- authRoutes.js
 |   |   |-- bookingRoutes.js
 |   |   |-- index.js
 |   |   `-- .gitkeep
 |   |-- services/
+|   |   |-- adminService.js
 |   |   |-- authService.js
 |   |   |-- bookingService.js
 |   |   `-- .gitkeep
@@ -217,7 +229,7 @@ VRR/
 - Landing page: complete
 - Authentication: backend and frontend complete
 - Booking system: backend and frontend request flow complete
-- Admin dashboard: pending
+- Admin dashboard: backend complete, frontend pending
 - Organizer dashboard: pending
 - Appointment scheduling: pending
 - Budget estimation: pending
@@ -227,7 +239,7 @@ VRR/
 
 ## APIs
 
-### Available Through Phase 7
+### Available Through Phase 9
 
 - `GET /`
   Returns API availability metadata.
@@ -247,6 +259,20 @@ VRR/
   Returns the bookings accessible to the authenticated user.
 - `GET /api/v1/bookings/:bookingId`
   Returns a specific accessible booking, including workflow history.
+- `GET /api/v1/admin/bookings`
+  Returns the admin booking table dataset with filters and pagination.
+- `GET /api/v1/admin/bookings/:bookingId`
+  Returns a single booking for admin review.
+- `PATCH /api/v1/admin/bookings/:bookingId/assign-organizer`
+  Assigns or clears an organizer on a booking.
+- `PATCH /api/v1/admin/bookings/:bookingId/workflow-state`
+  Moves a booking to a later workflow state and records history.
+- `GET /api/v1/admin/organizers`
+  Returns organizers plus assignment counts.
+- `GET /api/v1/admin/analytics/overview`
+  Returns admin dashboard summary metrics and recent bookings.
+- `GET /api/v1/admin/analytics/monthly`
+  Returns monthly booking creation and guest-count trends.
 
 ## Frontend Auth Pages
 
@@ -294,6 +320,15 @@ VRR/
 - `backend/utils/bookingWorkflow.js`
   Defines the canonical booking workflow states and labels.
 
+## Admin Backend
+
+- `backend/controllers/adminController.js`
+  Handles admin booking management, organizer assignment, and analytics endpoints.
+- `backend/routes/adminRoutes.js`
+  Mounts admin-only APIs under `/api/v1/admin`.
+- `backend/services/adminService.js`
+  Applies admin filters, analytics aggregation, and assignment/workflow update logic.
+
 ## Environment Variables
 
 Configured in `backend/.env`:
@@ -323,9 +358,14 @@ Configured in `backend/.env`:
 14. Submit a valid booking request and confirm the success panel shows a booking code and `REQUEST_SUBMITTED`.
 15. Confirm invalid frontend values show inline errors before the request is sent.
 16. Confirm the backend still rejects invalid payloads if you bypass frontend validation.
-17. Call `GET /api/v1/bookings` after submission and confirm the booking appears in the authenticated user's list.
-18. Confirm `GET /api/v1/health` still reports the expected health response.
-19. Confirm startup fails clearly if `JWT_SECRET` or `MONGODB_URI` is missing.
+17. Create or promote an admin user and an organizer user for admin API verification.
+18. Call `GET /api/v1/admin/bookings` with an admin token and confirm the booking table data is returned.
+19. Call `GET /api/v1/admin/organizers` and confirm organizer assignment counts are returned.
+20. Call `PATCH /api/v1/admin/bookings/:bookingId/assign-organizer` and confirm the organizer assignment is updated.
+21. Call `PATCH /api/v1/admin/bookings/:bookingId/workflow-state` and confirm the workflow moves forward with a new history entry.
+22. Call `GET /api/v1/admin/analytics/overview` and `GET /api/v1/admin/analytics/monthly` and confirm analytics data is returned.
+23. Confirm `GET /api/v1/health` still reports the expected health response.
+24. Confirm startup fails clearly if `JWT_SECRET` or `MONGODB_URI` is missing.
 
 ## Phase Notes
 
@@ -338,4 +378,5 @@ Configured in `backend/.env`:
 - Phase 6 adds the public-facing marketing experience for visitor discovery and booking conversion.
 - Phase 7 adds the backend foundation for booking requests and booking-progress tracking.
 - Phase 8 adds the frontend booking form and login-return persistence for saved drafts.
+- Phase 9 adds the backend APIs required for admin booking operations and analytics.
 - Authentication, booking logic, and dashboards are intentionally deferred to later phases.

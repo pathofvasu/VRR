@@ -232,7 +232,6 @@ const bookingSchema = new mongoose.Schema(
   }
 );
 
-bookingSchema.index({ bookingCode: 1 }, { unique: true });
 bookingSchema.index({ client: 1, createdAt: -1 });
 bookingSchema.index({ workflowState: 1, eventDate: 1 });
 

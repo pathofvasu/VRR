@@ -1,4 +1,5 @@
 const crypto = require("crypto");
+const mongoose = require("mongoose");
 
 const createHttpError = require("../utils/createHttpError");
 const {
@@ -8,6 +9,21 @@ const {
 } = require("../utils/bookingWorkflow");
 
 const generateBookingCode = () => `VRR-${crypto.randomBytes(4).toString("hex").toUpperCase()}`;
+
+const bookingPopulateOptions = [
+  {
+    path: "client",
+    select: "name email role createdAt updatedAt",
+  },
+  {
+    path: "assignedOrganizer",
+    select: "name email role createdAt updatedAt",
+  },
+  {
+    path: "workflowHistory.changedBy",
+    select: "name email role",
+  },
+];
 
 const normalizeRequestedServices = (servicesRequested) => {
   if (Array.isArray(servicesRequested)) {
@@ -125,6 +141,23 @@ const createWorkflowHistoryEntry = ({ state, changedBy, note }) => ({
   changedAt: new Date(),
 });
 
+const ensureWorkflowStateTransitionAllowed = (currentState, nextState) => {
+  if (!BOOKING_WORKFLOW_SEQUENCE.includes(nextState)) {
+    throw createHttpError(400, "Workflow state is invalid.");
+  }
+
+  if (currentState === nextState) {
+    throw createHttpError(400, "Booking is already in the requested workflow state.");
+  }
+
+  const currentIndex = BOOKING_WORKFLOW_SEQUENCE.indexOf(currentState);
+  const nextIndex = BOOKING_WORKFLOW_SEQUENCE.indexOf(nextState);
+
+  if (nextIndex < currentIndex) {
+    throw createHttpError(400, "Workflow state cannot move backwards.");
+  }
+};
+
 const buildBookingCreationPayload = ({ bookingCode, clientId, validatedBookingInput }) => ({
   bookingCode,
   client: clientId,
@@ -204,6 +237,66 @@ const buildWorkflowStateCatalog = () =>
     order: index + 1,
   }));
 
+const buildAdminBookingFilters = (query) => {
+  const filters = {};
+
+  if (query.workflowState && BOOKING_WORKFLOW_SEQUENCE.includes(query.workflowState)) {
+    filters.workflowState = query.workflowState;
+  }
+
+  if (query.assignedOrganizer === "unassigned") {
+    filters.assignedOrganizer = null;
+  } else if (query.assignedOrganizer) {
+    if (!mongoose.Types.ObjectId.isValid(query.assignedOrganizer)) {
+      throw createHttpError(400, "Assigned organizer filter is invalid.");
+    }
+
+    filters.assignedOrganizer = query.assignedOrganizer;
+  }
+
+  if (query.eventType) {
+    filters.eventType = query.eventType;
+  }
+
+  if (query.search) {
+    const normalizedSearch = String(query.search).trim();
+
+    if (normalizedSearch) {
+      filters.$or = [
+        { bookingCode: { $regex: normalizedSearch, $options: "i" } },
+        { eventTitle: { $regex: normalizedSearch, $options: "i" } },
+        { "location.city": { $regex: normalizedSearch, $options: "i" } },
+      ];
+    }
+  }
+
+  if (query.dateFrom || query.dateTo) {
+    filters.eventDate = {};
+
+    if (query.dateFrom) {
+      const dateFrom = new Date(query.dateFrom);
+
+      if (Number.isNaN(dateFrom.getTime())) {
+        throw createHttpError(400, "dateFrom must be a valid date.");
+      }
+
+      filters.eventDate.$gte = dateFrom;
+    }
+
+    if (query.dateTo) {
+      const dateTo = new Date(query.dateTo);
+
+      if (Number.isNaN(dateTo.getTime())) {
+        throw createHttpError(400, "dateTo must be a valid date.");
+      }
+
+      filters.eventDate.$lte = dateTo;
+    }
+  }
+
+  return filters;
+};
+
 const buildBookingResponse = (booking) => ({
   id: booking._id.toString(),
   bookingCode: booking.bookingCode,
@@ -231,11 +324,16 @@ const buildBookingResponse = (booking) => ({
 });
 
 module.exports = {
+  BOOKING_WORKFLOW_STATES,
   generateBookingCode,
+  getBookingPopulateOptions: () => bookingPopulateOptions,
   validateBookingPayload,
+  createWorkflowHistoryEntry,
+  ensureWorkflowStateTransitionAllowed,
   buildBookingCreationPayload,
   getBookingAccessFilter,
   getBookingListFilter,
+  buildAdminBookingFilters,
   buildWorkflowStateCatalog,
   buildBookingResponse,
 };

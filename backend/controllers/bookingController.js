@@ -6,28 +6,15 @@ const {
   buildBookingResponse,
   buildWorkflowStateCatalog,
   generateBookingCode,
+  getBookingPopulateOptions,
   getBookingAccessFilter,
   getBookingListFilter,
   validateBookingPayload,
 } = require("../services/bookingService");
 
-const bookingPopulateOptions = [
-  {
-    path: "client",
-    select: "name email role createdAt updatedAt",
-  },
-  {
-    path: "assignedOrganizer",
-    select: "name email role createdAt updatedAt",
-  },
-  {
-    path: "workflowHistory.changedBy",
-    select: "name email role",
-  },
-];
-
 const createBooking = asyncHandler(async (req, res) => {
   const validatedBookingInput = validateBookingPayload(req.body);
+  const bookingPopulateOptions = getBookingPopulateOptions();
 
   const booking = await Booking.create(
     buildBookingCreationPayload({
@@ -49,9 +36,10 @@ const createBooking = asyncHandler(async (req, res) => {
 });
 
 const listBookings = asyncHandler(async (req, res) => {
+  const bookingPopulateOptions = getBookingPopulateOptions();
   const bookings = await Booking.find(getBookingListFilter(req.user))
     .sort({ createdAt: -1 })
-    .populate(bookingPopulateOptions);
+    .populate(getBookingPopulateOptions());
 
   res.status(200).json({
     success: true,
@@ -63,12 +51,13 @@ const listBookings = asyncHandler(async (req, res) => {
 });
 
 const getBookingById = asyncHandler(async (req, res) => {
+  const bookingPopulateOptions = getBookingPopulateOptions();
   const booking = await Booking.findOne(
     getBookingAccessFilter({
       user: req.user,
       bookingId: req.params.bookingId,
     })
-  ).populate(bookingPopulateOptions);
+  ).populate(getBookingPopulateOptions());
 
   if (!booking) {
     throw createHttpError(404, "Booking not found or not accessible.");
