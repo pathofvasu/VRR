@@ -1,6 +1,6 @@
 # VRR Events
 
-VRR Events is a production-oriented full-stack event management web application being built phase by phase. The repository now includes the scaffold, the Express backend foundation, validated MongoDB environment configuration, JWT-based backend authentication, frontend authentication pages, and a full public landing page experience.
+VRR Events is a production-oriented full-stack event management web application being built phase by phase. The repository now includes the scaffold, the Express backend foundation, validated MongoDB environment configuration, JWT-based backend authentication, frontend authentication pages, a full public landing page, and the first booking workflow backend APIs.
 
 ## Current Phase
 
@@ -10,6 +10,7 @@ VRR Events is a production-oriented full-stack event management web application 
 - Phase 4: Authentication System
 - Phase 5: Frontend Authentication Pages
 - Phase 6: Landing Page Development
+- Phase 7: Booking System Backend
 
 ## Completed Modules
 
@@ -62,6 +63,14 @@ VRR Events is a production-oriented full-stack event management web application 
 - Added animated stats, reveal-on-scroll effects, and rotating testimonials
 - Added dedicated landing-page CSS and JavaScript assets
 
+### Phase 7
+
+- Added a `Booking` model with workflow state tracking and history
+- Added booking creation, listing, and detail APIs
+- Added a workflow-state catalog endpoint for frontend and dashboard use
+- Added role-aware booking access rules for clients, admins, and organizers
+- Added booking service helpers for validation, access filters, and response shaping
+
 ## Project Structure
 
 ```text
@@ -77,6 +86,7 @@ VRR/
 |   |   `-- env.js
 |   |-- controllers/
 |   |   |-- authController.js
+|   |   |-- bookingController.js
 |   |   |-- healthController.js
 |   |   `-- .gitkeep
 |   |-- middleware/
@@ -85,19 +95,23 @@ VRR/
 |   |   |-- notFound.js
 |   |   `-- .gitkeep
 |   |-- models/
+|   |   |-- Booking.js
 |   |   |-- User.js
 |   |   `-- .gitkeep
 |   |-- routes/
 |   |   |-- authRoutes.js
+|   |   |-- bookingRoutes.js
 |   |   |-- index.js
 |   |   `-- .gitkeep
 |   |-- services/
 |   |   |-- authService.js
+|   |   |-- bookingService.js
 |   |   `-- .gitkeep
 |   |-- uploads/
 |   |   `-- .gitkeep
 |   `-- utils/
 |       |-- asyncHandler.js
+|       |-- bookingWorkflow.js
 |       |-- createHttpError.js
 |       |-- validators.js
 |       `-- .gitkeep
@@ -186,7 +200,7 @@ VRR/
 
 - Landing page: complete
 - Authentication: backend and frontend complete
-- Booking system: pending
+- Booking system: backend complete, frontend pending
 - Admin dashboard: pending
 - Organizer dashboard: pending
 - Appointment scheduling: pending
@@ -197,7 +211,7 @@ VRR/
 
 ## APIs
 
-### Available Through Phase 4
+### Available Through Phase 7
 
 - `GET /`
   Returns API availability metadata.
@@ -209,6 +223,14 @@ VRR/
   Authenticates an existing user and returns a JWT token.
 - `GET /api/v1/auth/me`
   Returns the currently authenticated user profile when a valid Bearer token is supplied.
+- `GET /api/v1/bookings/workflow-states`
+  Returns the ordered booking workflow states used by the platform.
+- `POST /api/v1/bookings`
+  Creates a booking request for the authenticated user.
+- `GET /api/v1/bookings`
+  Returns the bookings accessible to the authenticated user.
+- `GET /api/v1/bookings/:bookingId`
+  Returns a specific accessible booking, including workflow history.
 
 ## Frontend Auth Pages
 
@@ -227,6 +249,19 @@ VRR/
   Dedicated visual system and responsive layout for the landing page.
 - `frontend/js/landing.js`
   Handles stat animations, reveal effects, testimonial rotation, and mobile navigation behavior.
+
+## Booking Backend
+
+- `backend/models/Booking.js`
+  Stores event request details, workflow state, and workflow history.
+- `backend/controllers/bookingController.js`
+  Handles booking creation, listing, detail access, and workflow-state retrieval.
+- `backend/routes/bookingRoutes.js`
+  Mounts booking APIs under `/api/v1/bookings`.
+- `backend/services/bookingService.js`
+  Validates booking payloads, shapes responses, and applies access rules.
+- `backend/utils/bookingWorkflow.js`
+  Defines the canonical booking workflow states and labels.
 
 ## Environment Variables
 
@@ -251,12 +286,14 @@ Configured in `backend/.env`:
 8. Verify the mobile navigation toggle works on a narrow viewport.
 9. Scroll through the page and confirm reveal animations and counter animations trigger correctly.
 10. Confirm testimonial rotation works and the dot controls switch testimonials.
-11. Open `register.html`, create an account, and confirm you are redirected to `dashboard.html`.
-12. Open `login.html`, sign in with a valid account, and confirm the JWT session is stored locally.
-13. Use the dashboard page to confirm profile retrieval and sign-out behavior.
-14. Confirm invalid frontend inputs show inline validation errors before the request is sent.
-15. Confirm `GET /api/v1/health` still reports the expected health response.
-16. Confirm startup fails clearly if `JWT_SECRET` or `MONGODB_URI` is missing.
+11. Register or log in a client account.
+12. Call `POST /api/v1/bookings` with a valid authenticated payload and confirm the booking starts in `REQUEST_SUBMITTED`.
+13. Call `GET /api/v1/bookings` and confirm the booking appears in the authenticated user's list.
+14. Call `GET /api/v1/bookings/:bookingId` and confirm the workflow history is returned.
+15. Call `GET /api/v1/bookings/workflow-states` and confirm the ordered workflow-state catalog is returned.
+16. Confirm invalid booking payloads return validation errors.
+17. Confirm `GET /api/v1/health` still reports the expected health response.
+18. Confirm startup fails clearly if `JWT_SECRET` or `MONGODB_URI` is missing.
 
 ## Phase Notes
 
@@ -267,4 +304,5 @@ Configured in `backend/.env`:
 - Phase 5 adds browser-side session management using local storage.
 - Frontend auth expects the API base URL to default to `http://localhost:5000/api/v1`.
 - Phase 6 adds the public-facing marketing experience for visitor discovery and booking conversion.
+- Phase 7 adds the backend foundation for booking requests and booking-progress tracking.
 - Authentication, booking logic, and dashboards are intentionally deferred to later phases.
