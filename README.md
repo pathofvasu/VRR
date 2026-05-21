@@ -1,6 +1,6 @@
 # VRR Events
 
-VRR Events is a production-oriented full-stack event management web application being built phase by phase. The repository now includes the scaffold, the Express backend foundation, validated MongoDB environment configuration, JWT-based backend authentication, frontend authentication pages, a full public landing page, booking workflow backend APIs, a real booking request frontend, and the admin backend needed for booking management and analytics.
+VRR Events is a production-oriented full-stack event management web application being built phase by phase. The repository now includes the scaffold, the Express backend foundation, validated MongoDB environment configuration, JWT-based backend authentication, frontend authentication pages, a full public landing page, booking workflow backend APIs, a real booking request frontend, the admin backend needed for booking management and analytics, and a functional admin dashboard frontend.
 
 ## Current Phase
 
@@ -13,6 +13,7 @@ VRR Events is a production-oriented full-stack event management web application 
 - Phase 7: Booking System Backend
 - Phase 8: Booking Form Frontend
 - Phase 9: Admin Dashboard Backend
+- Phase 10: Admin Dashboard Frontend
 
 ## Completed Modules
 
@@ -89,6 +90,16 @@ VRR Events is a production-oriented full-stack event management web application 
 - Added analytics overview and monthly trend APIs for dashboard cards and charts
 - Added shared backend helpers for admin booking filters and workflow transition rules
 
+### Phase 10
+
+- Replaced the authenticated session placeholder with a full admin dashboard UI
+- Added admin analytics cards, monthly booking trend visualization, workflow-state breakdown, and recent booking activity
+- Added booking table filters for search, workflow state, organizer assignment, and event type
+- Added booking pagination controls connected to the admin backend
+- Added organizer assignment and workflow update actions with optional admin notes
+- Added role guarding so only admin accounts can use `dashboard.html`
+- Added a dedicated admin dashboard CSS file and admin API frontend module
+
 ## Project Structure
 
 ```text
@@ -140,10 +151,12 @@ VRR/
 |   |-- assets/
 |   |-- components/
 |   |-- css/
+|   |   |-- admin-dashboard.css
 |   |   |-- auth.css
 |   |   |-- booking.css
 |   |   `-- landing.css
 |   |-- js/
+|   |   |-- admin-api.js
 |   |   |-- api-client.js
 |   |   |-- auth-api.js
 |   |   |-- auth-config.js
@@ -229,7 +242,7 @@ VRR/
 - Landing page: complete
 - Authentication: backend and frontend complete
 - Booking system: backend and frontend request flow complete
-- Admin dashboard: backend complete, frontend pending
+- Admin dashboard: backend and frontend complete
 - Organizer dashboard: pending
 - Appointment scheduling: pending
 - Budget estimation: pending
@@ -239,7 +252,7 @@ VRR/
 
 ## APIs
 
-### Available Through Phase 9
+### Available Through Phase 10
 
 - `GET /`
   Returns API availability metadata.
@@ -281,7 +294,7 @@ VRR/
 - `frontend/register.html`
   Creates a client account, validates form inputs, and stores the returned JWT session.
 - `frontend/dashboard.html`
-  Confirms the stored session by calling `/api/v1/auth/me` and allows sign-out.
+  Provides the admin dashboard when the stored session belongs to an admin account.
 
 ## Landing Page
 
@@ -329,6 +342,17 @@ VRR/
 - `backend/services/adminService.js`
   Applies admin filters, analytics aggregation, and assignment/workflow update logic.
 
+## Admin Dashboard Frontend
+
+- `frontend/dashboard.html`
+  Admin operations dashboard with analytics, booking filters, booking table, workflow updates, organizer assignment, and recent activity.
+- `frontend/css/admin-dashboard.css`
+  Dedicated responsive visual styling for the admin dashboard experience.
+- `frontend/js/admin-api.js`
+  Frontend API adapter for `/api/v1/admin` booking, organizer, assignment, workflow, and analytics endpoints.
+- `frontend/js/dashboard.js`
+  Guards admin access, loads dashboard data, renders booking operations, handles pagination, and submits admin updates.
+
 ## Environment Variables
 
 Configured in `backend/.env`:
@@ -364,8 +388,15 @@ Configured in `backend/.env`:
 20. Call `PATCH /api/v1/admin/bookings/:bookingId/assign-organizer` and confirm the organizer assignment is updated.
 21. Call `PATCH /api/v1/admin/bookings/:bookingId/workflow-state` and confirm the workflow moves forward with a new history entry.
 22. Call `GET /api/v1/admin/analytics/overview` and `GET /api/v1/admin/analytics/monthly` and confirm analytics data is returned.
-23. Confirm `GET /api/v1/health` still reports the expected health response.
-24. Confirm startup fails clearly if `JWT_SECRET` or `MONGODB_URI` is missing.
+23. Log in through `frontend/login.html` with an admin account and open `frontend/dashboard.html`.
+24. Confirm dashboard metrics, monthly analytics, workflow breakdown, recent bookings, and booking table data load from the backend.
+25. Apply search, workflow, organizer, and event-type filters and confirm the booking table updates.
+26. Use pagination controls when enough bookings exist to produce multiple pages.
+27. Assign or clear an organizer from the booking table and confirm the row updates after refresh.
+28. Move a booking to a later workflow state and confirm the dashboard shows the new state.
+29. Log in with a non-admin account, open `dashboard.html`, and confirm the page blocks access and redirects away.
+30. Confirm `GET /api/v1/health` still reports the expected health response.
+31. Confirm startup fails clearly if `JWT_SECRET` or `MONGODB_URI` is missing.
 
 ## Phase Notes
 
@@ -379,4 +410,5 @@ Configured in `backend/.env`:
 - Phase 7 adds the backend foundation for booking requests and booking-progress tracking.
 - Phase 8 adds the frontend booking form and login-return persistence for saved drafts.
 - Phase 9 adds the backend APIs required for admin booking operations and analytics.
-- Authentication, booking logic, and dashboards are intentionally deferred to later phases.
+- Phase 10 adds the frontend admin dashboard for analytics, filtering, assignment, pagination, and workflow updates.
+- Organizer dashboard, scheduling, quotation, agreement, notifications, and deployment work are intentionally deferred to later phases.

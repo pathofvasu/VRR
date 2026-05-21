@@ -3,81 +3,188 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>VRR Events | Dashboard</title>
+  <title>VRR Events | Admin Dashboard</title>
   <link rel="stylesheet" href="./css/auth.css">
+  <link rel="stylesheet" href="./css/admin-dashboard.css">
 </head>
 <body>
-  <main class="dashboard-shell">
-    <div class="dashboard-layout">
-      <section class="dashboard-panel" aria-labelledby="dashboard-title">
-        <div class="dashboard-headline">
-          <div class="dashboard-kicker">Authenticated Client Session</div>
-          <h1 id="dashboard-title">Your VRR Events session is active.</h1>
-          <p>
-            This Phase 5 view confirms frontend token storage and backend profile retrieval before the full
-            dashboards arrive in later phases.
-          </p>
-        </div>
-
-        <div class="status-banner" data-status-banner aria-live="polite"></div>
-
-        <div class="dashboard-card-grid">
-          <article class="metric-card">
-            <strong>JWT Stored</strong>
-            <span>Session token is saved in browser local storage.</span>
-          </article>
-          <article class="metric-card">
-            <strong>Profile Sync</strong>
-            <span>`/api/v1/auth/me` is used to verify the active session.</span>
-          </article>
-          <article class="metric-card">
-            <strong>Next Phase Ready</strong>
-            <span>These helpers can now support booking and dashboard workflows.</span>
-          </article>
-        </div>
-
+  <main class="admin-shell">
+    <section class="admin-hero" aria-labelledby="dashboard-title">
+      <div>
+        <p class="admin-kicker">VRR Events Command Center</p>
+        <h1 id="dashboard-title">Admin Dashboard</h1>
         <p>
-          Backend API in use:
-          <span class="pill" data-api-base></span>
+          Monitor booking demand, assign organizers, move workflows forward, and keep every event
+          request visible from first review to completion.
         </p>
+      </div>
+      <div class="admin-session-card" aria-label="Signed in account">
+        <span data-user-role>Checking access...</span>
+        <strong data-user-name>Loading...</strong>
+        <small data-user-email>Loading...</small>
+        <button class="secondary-button" type="button" data-sign-out>Sign Out</button>
+      </div>
+    </section>
 
-        <div class="dashboard-actions">
-          <button class="primary-button" type="button" data-refresh-profile>Refresh Profile</button>
-          <button class="secondary-button" type="button" data-sign-out>Sign Out</button>
+    <div class="status-banner" data-status-banner aria-live="polite"></div>
+
+    <section class="admin-grid admin-grid--metrics" aria-label="Admin analytics overview">
+      <article class="admin-metric-card">
+        <span>Total Bookings</span>
+        <strong data-metric="totalBookings">--</strong>
+        <small>All submitted event requests</small>
+      </article>
+      <article class="admin-metric-card">
+        <span>Review Queue</span>
+        <strong data-metric="reviewQueueCount">--</strong>
+        <small>Requests awaiting admin attention</small>
+      </article>
+      <article class="admin-metric-card">
+        <span>Unassigned</span>
+        <strong data-metric="unassignedBookings">--</strong>
+        <small>Bookings without organizers</small>
+      </article>
+      <article class="admin-metric-card">
+        <span>Completed Events</span>
+        <strong data-metric="completedEvents">--</strong>
+        <small>Successfully closed workflows</small>
+      </article>
+      <article class="admin-metric-card">
+        <span>Organizers</span>
+        <strong data-metric="activeOrganizerCount">--</strong>
+        <small>Active organizer accounts</small>
+      </article>
+      <article class="admin-metric-card">
+        <span>Upcoming</span>
+        <strong data-metric="upcomingBookings">--</strong>
+        <small>Scheduled or in-progress events</small>
+      </article>
+    </section>
+
+    <section class="admin-panel" aria-labelledby="filters-title">
+      <div class="admin-panel-header">
+        <div>
+          <p class="admin-kicker">Booking Operations</p>
+          <h2 id="filters-title">Filter booking pipeline</h2>
         </div>
-      </section>
+        <button class="secondary-button" type="button" data-refresh-dashboard>Refresh Dashboard</button>
+      </div>
 
-      <aside class="profile-panel" aria-labelledby="profile-title">
-        <div class="panel-header">
-          <h2 id="profile-title">Stored Account Snapshot</h2>
-          <p>Your frontend auth layer keeps this session available until sign-out or token invalidation.</p>
+      <form class="admin-filter-form" data-admin-filters>
+        <label>
+          <span>Search</span>
+          <input type="search" name="search" placeholder="Booking code, title, or city">
+        </label>
+        <label>
+          <span>Workflow</span>
+          <select name="workflowState" data-workflow-filter>
+            <option value="">All workflow states</option>
+          </select>
+        </label>
+        <label>
+          <span>Organizer</span>
+          <select name="assignedOrganizer" data-organizer-filter>
+            <option value="">All organizers</option>
+            <option value="unassigned">Unassigned only</option>
+          </select>
+        </label>
+        <label>
+          <span>Event Type</span>
+          <select name="eventType">
+            <option value="">All event types</option>
+            <option value="wedding">Wedding</option>
+            <option value="engagement">Engagement</option>
+            <option value="birthday">Birthday</option>
+            <option value="corporate">Corporate</option>
+            <option value="private-party">Private Party</option>
+            <option value="cultural-event">Cultural Event</option>
+            <option value="other">Other</option>
+          </select>
+        </label>
+        <div class="admin-filter-actions">
+          <button class="primary-button" type="submit">Apply Filters</button>
+          <button class="secondary-button" type="button" data-clear-filters>Clear</button>
+        </div>
+      </form>
+    </section>
+
+    <section class="admin-dashboard-columns">
+      <article class="admin-panel admin-table-panel" aria-labelledby="bookings-title">
+        <div class="admin-panel-header">
+          <div>
+            <p class="admin-kicker">Live Booking Queue</p>
+            <h2 id="bookings-title">Manage bookings</h2>
+          </div>
+          <span class="admin-table-count" data-booking-count>Loading...</span>
         </div>
 
-        <dl class="profile-meta">
-          <div>
-            <dt>Name</dt>
-            <dd data-user-name>Loading...</dd>
-          </div>
-          <div>
-            <dt>Email</dt>
-            <dd data-user-email>Loading...</dd>
-          </div>
-          <div>
-            <dt>Role</dt>
-            <dd data-user-role>Loading...</dd>
-          </div>
-          <div>
-            <dt>Created At</dt>
-            <dd data-user-created-at>Loading...</dd>
-          </div>
-        </dl>
+        <div class="admin-table-wrap">
+          <table class="admin-booking-table">
+            <thead>
+              <tr>
+                <th scope="col">Booking</th>
+                <th scope="col">Client</th>
+                <th scope="col">Event</th>
+                <th scope="col">Workflow</th>
+                <th scope="col">Organizer</th>
+                <th scope="col">Actions</th>
+              </tr>
+            </thead>
+            <tbody data-booking-table-body>
+              <tr>
+                <td colspan="6">Loading bookings...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
 
-        <p>
-          Need a different account? <a class="dashboard-link" href="./login.html">Return to login</a>.
-        </p>
+        <div class="admin-pagination" aria-label="Booking pagination">
+          <button class="secondary-button" type="button" data-page-previous>Previous</button>
+          <span data-page-summary>Page -- of --</span>
+          <button class="secondary-button" type="button" data-page-next>Next</button>
+        </div>
+      </article>
+
+      <aside class="admin-side-stack">
+        <article class="admin-panel" aria-labelledby="monthly-title">
+          <div class="admin-panel-header">
+            <div>
+              <p class="admin-kicker">Demand Trend</p>
+              <h2 id="monthly-title">Monthly bookings</h2>
+            </div>
+          </div>
+          <div class="monthly-chart" data-monthly-chart>
+            <p>Loading monthly analytics...</p>
+          </div>
+        </article>
+
+        <article class="admin-panel" aria-labelledby="workflow-title">
+          <div class="admin-panel-header">
+            <div>
+              <p class="admin-kicker">Workflow Health</p>
+              <h2 id="workflow-title">State breakdown</h2>
+            </div>
+          </div>
+          <div class="workflow-breakdown" data-workflow-breakdown>
+            <p>Loading workflow states...</p>
+          </div>
+        </article>
+
+        <article class="admin-panel" aria-labelledby="recent-title">
+          <div class="admin-panel-header">
+            <div>
+              <p class="admin-kicker">Recent Activity</p>
+              <h2 id="recent-title">Latest requests</h2>
+            </div>
+          </div>
+          <div class="recent-list" data-recent-bookings>
+            <p>Loading recent bookings...</p>
+          </div>
+        </article>
       </aside>
-    </div>
+    </section>
   </main>
+
   <script type="module" src="./js/dashboard.js"></script>
 </body>
 </html>
