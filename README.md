@@ -1,6 +1,6 @@
 # VRR Events
 
-VRR Events is a production-oriented full-stack event management web application being built phase by phase. The repository now includes the scaffold, authentication, booking workflow APIs, booking request UI, admin dashboard, organizer module, appointment scheduling, budget estimation, agreement PDF generation, and an expanded analytics dashboard.
+VRR Events is a production-oriented full-stack event management web application being built phase by phase. The repository now includes the scaffold, authentication, booking workflow APIs, booking request UI, admin dashboard, organizer module, appointment scheduling, budget estimation, agreement PDF generation, analytics, and notifications/reminders.
 
 ## Current Phase
 
@@ -19,6 +19,7 @@ VRR Events is a production-oriented full-stack event management web application 
 - Phase 13: Budget Estimation System
 - Phase 14: Agreement PDF System
 - Phase 15: Analytics Dashboard
+- Phase 16: Notifications & Reminders
 
 ## Completed Modules
 
@@ -154,6 +155,17 @@ VRR Events is a production-oriented full-stack event management web application 
 - Added a dedicated analytics dashboard page with metrics, trend bars, organizer table, and recent completed-event list
 - Added admin dashboard navigation to the analytics page
 
+### Phase 16
+
+- Added `Notification` model for in-app and email notification records
+- Added SMTP configuration using `nodemailer`
+- Added appointment scheduled and appointment status update notifications
+- Added admin-triggered appointment reminder generation for upcoming appointments
+- Added due email dispatch endpoint with sent, failed, and skipped tracking
+- Added notification inbox APIs and mark-as-read support
+- Added a shared notifications frontend page with admin reminder/email controls
+- Added notification links across admin, organizer, booking, appointment, estimate, and analytics pages
+
 ## Project Structure
 
 ```text
@@ -173,6 +185,7 @@ VRR/
 |   |   |-- authController.js
 |   |   |-- bookingController.js
 |   |   |-- healthController.js
+|   |   |-- notificationController.js
 |   |   |-- organizerController.js
 |   |   `-- .gitkeep
 |   |-- middleware/
@@ -183,6 +196,7 @@ VRR/
 |   |-- models/
 |   |   |-- Appointment.js
 |   |   |-- Booking.js
+|   |   |-- Notification.js
 |   |   |-- User.js
 |   |   `-- .gitkeep
 |   |-- routes/
@@ -191,6 +205,7 @@ VRR/
 |   |   |-- authRoutes.js
 |   |   |-- bookingRoutes.js
 |   |   |-- index.js
+|   |   |-- notificationRoutes.js
 |   |   |-- organizerRoutes.js
 |   |   `-- .gitkeep
 |   |-- services/
@@ -199,6 +214,8 @@ VRR/
 |   |   |-- appointmentService.js
 |   |   |-- authService.js
 |   |   |-- bookingService.js
+|   |   |-- emailService.js
+|   |   |-- notificationService.js
 |   |   |-- organizerService.js
 |   |   |-- quotationService.js
 |   |   `-- .gitkeep
@@ -222,6 +239,7 @@ VRR/
 |   |   |-- booking.css
 |   |   |-- estimates.css
 |   |   |-- landing.css
+|   |   |-- notifications.css
 |   |   `-- organizer-dashboard.css
 |   |-- js/
 |   |   |-- admin-api.js
@@ -243,6 +261,8 @@ VRR/
 |   |   |-- estimates.js
 |   |   |-- landing.js
 |   |   |-- login.js
+|   |   |-- notification-api.js
+|   |   |-- notifications.js
 |   |   |-- organizer-api.js
 |   |   |-- organizer-dashboard.js
 |   |   |-- package.json
@@ -254,6 +274,7 @@ VRR/
 |   |-- estimates.html
 |   |-- index.html
 |   |-- login.html
+|   |-- notifications.html
 |   |-- organizer-dashboard.html
 |   `-- register.html
 |-- .gitignore
@@ -327,6 +348,7 @@ VRR/
 - Budget estimation: backend and frontend complete
 - Agreement PDF generation: backend and frontend complete
 - Analytics dashboard: backend and frontend complete
+- Notifications & Reminders: backend and frontend complete
 - Workflow state management: pending
 
 ## APIs
@@ -395,6 +417,14 @@ VRR/
   Downloads the generated agreement PDF for users with booking access.
 - `POST /api/v1/bookings/:bookingId/agreement/confirm`
   Confirms a generated agreement and moves the booking to `EVENT_SCHEDULED`.
+- `GET /api/v1/notifications`
+  Returns in-app notifications for the authenticated user.
+- `PATCH /api/v1/notifications/:notificationId/read`
+  Marks a user's in-app notification as read.
+- `POST /api/v1/notifications/reminders/appointments`
+  Allows admins to generate upcoming appointment reminders and dispatch due email notifications.
+- `POST /api/v1/notifications/dispatch-emails`
+  Allows admins to dispatch pending due email notifications.
 
 ## Frontend Auth Pages
 
@@ -412,6 +442,8 @@ VRR/
   Provides role-aware read-only budget estimate and quotation review.
 - `frontend/analytics.html`
   Provides admin-only analytics for monthly stats, completed events, and organizer performance.
+- `frontend/notifications.html`
+  Provides a shared notification center for appointment alerts and reminders.
 
 ## Landing Page
 
@@ -559,6 +591,27 @@ VRR/
 - `frontend/js/analytics.js`
   Loads admin analytics APIs and renders metrics, charts, tables, and access guards.
 
+## Notifications & Reminders
+
+- `backend/models/Notification.js`
+  Stores in-app and email notification records with delivery/read status.
+- `backend/services/emailService.js`
+  Sends emails through SMTP using `nodemailer` when SMTP configuration is present.
+- `backend/services/notificationService.js`
+  Creates appointment alerts, reminder notifications, sends due emails, lists user notifications, and marks notifications read.
+- `backend/controllers/notificationController.js`
+  Handles notification inbox, read updates, reminder generation, and email dispatch requests.
+- `backend/routes/notificationRoutes.js`
+  Mounts protected notification APIs under `/api/v1/notifications`.
+- `frontend/notifications.html`
+  Shared notification center for clients, organizers, and admins.
+- `frontend/css/notifications.css`
+  Dedicated responsive styling for the notification center.
+- `frontend/js/notification-api.js`
+  Frontend API adapter for notification endpoints.
+- `frontend/js/notifications.js`
+  Renders notifications, marks items read, and exposes admin reminder/email controls.
+
 ## Environment Variables
 
 Configured in `backend/.env`:
@@ -569,6 +622,12 @@ Configured in `backend/.env`:
 - `JWT_SECRET`: required secret used to sign and verify JWTs
 - `JWT_EXPIRES_IN`: optional JWT lifetime, default `7d`
 - `CORS_ORIGINS`: comma-separated list of allowed frontend origins
+- `SMTP_HOST`: optional SMTP host for email notifications
+- `SMTP_PORT`: optional SMTP port, default `587`
+- `SMTP_SECURE`: optional SMTP TLS flag, default `false`
+- `SMTP_USER`: optional SMTP username
+- `SMTP_PASS`: optional SMTP password
+- `SMTP_FROM`: optional sender identity for email notifications
 
 ## Testing Steps
 
@@ -631,8 +690,13 @@ Configured in `backend/.env`:
 57. Confirm completed-event trend and quoted value metrics render from `GET /api/v1/admin/analytics/completed-events`.
 58. Confirm organizer workload and completion rates render from `GET /api/v1/admin/analytics/organizers`.
 59. Log in as a non-admin and confirm `analytics.html` redirects away.
-60. Confirm `GET /api/v1/health` still reports the expected health response.
-61. Confirm startup fails clearly if `JWT_SECRET` or `MONGODB_URI` is missing.
+60. Schedule an appointment and confirm in-app notifications are created for relevant users.
+61. Open `frontend/notifications.html` and confirm notifications render.
+62. Mark a notification as read and confirm its status updates.
+63. Log in as admin, run appointment reminders, and confirm reminder notifications are created for upcoming appointments.
+64. Configure SMTP variables and dispatch due emails; confirm sent, failed, and skipped counts are reported.
+65. Confirm `GET /api/v1/health` still reports the expected health response.
+66. Confirm startup fails clearly if `JWT_SECRET` or `MONGODB_URI` is missing.
 
 ## Phase Notes
 
@@ -652,4 +716,5 @@ Configured in `backend/.env`:
 - Phase 13 adds admin quotation generation and role-aware budget estimate review.
 - Phase 14 adds agreement PDF generation, download, and confirmation workflow.
 - Phase 15 adds completed-event, monthly, and organizer analytics dashboards.
-- Notifications and deployment work are intentionally deferred to later phases.
+- Phase 16 adds in-app notifications, appointment reminders, and SMTP email dispatch.
+- Deployment work is intentionally deferred to later phases.

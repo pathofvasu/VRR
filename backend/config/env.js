@@ -24,6 +24,8 @@ const parseCorsOrigins = (value) => {
     .filter(Boolean);
 };
 
+const parseBoolean = (value) => String(value || "").toLowerCase() === "true";
+
 module.exports = {
   appName: "VRR Events",
   apiPrefix: "/api/v1",
@@ -33,4 +35,12 @@ module.exports = {
   jwtSecret: process.env.JWT_SECRET,
   jwtExpiresIn: process.env.JWT_EXPIRES_IN || "7d",
   corsOrigins: parseCorsOrigins(process.env.CORS_ORIGINS),
+  smtp: {
+    host: process.env.SMTP_HOST || "",
+    port: Number(process.env.SMTP_PORT) || 587,
+    secure: parseBoolean(process.env.SMTP_SECURE),
+    user: process.env.SMTP_USER || "",
+    pass: process.env.SMTP_PASS || "",
+    from: process.env.SMTP_FROM || "VRR Events <no-reply@vrr-events.local>",
+  },
 };

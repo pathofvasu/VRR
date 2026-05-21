@@ -6,6 +6,10 @@ const User = require("../models/User");
 const createHttpError = require("../utils/createHttpError");
 const { BOOKING_WORKFLOW_STATES } = require("../utils/bookingWorkflow");
 const {
+  createAppointmentScheduledNotifications,
+  createAppointmentStatusNotifications,
+} = require("./notificationService");
+const {
   createWorkflowHistoryEntry,
   getBookingAccessFilter,
   getBookingPopulateOptions,
@@ -269,6 +273,8 @@ const createAppointment = async ({ user, payload }) => {
     appointmentPopulateOptions
   );
 
+  await createAppointmentScheduledNotifications(populatedAppointment);
+
   return buildAppointmentResponse(populatedAppointment);
 };
 
@@ -296,6 +302,8 @@ const updateAppointmentStatus = async ({ user, appointmentId, status }) => {
   const populatedAppointment = await Appointment.findById(appointment._id).populate(
     appointmentPopulateOptions
   );
+
+  await createAppointmentStatusNotifications(populatedAppointment);
 
   return buildAppointmentResponse(populatedAppointment);
 };

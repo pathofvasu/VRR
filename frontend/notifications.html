@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VRR Events | Notifications</title>
+  <link rel="stylesheet" href="./css/auth.css">
+  <link rel="stylesheet" href="./css/notifications.css">
+</head>
+<body>
+  <main class="notifications-shell">
+    <section class="notifications-hero" aria-labelledby="notifications-title">
+      <div>
+        <p class="notifications-kicker">Notification Center</p>
+        <h1 id="notifications-title">Reminders & Alerts</h1>
+        <p>
+          Review appointment alerts, reminder messages, and workflow notifications generated for
+          your VRR Events account.
+        </p>
+      </div>
+      <aside class="notifications-profile" aria-label="Signed in account">
+        <span data-user-role>Checking access...</span>
+        <strong data-user-name>Loading...</strong>
+        <small data-user-email>Loading...</small>
+        <a class="secondary-button notifications-link" href="#" data-dashboard-link>Dashboard</a>
+        <button class="secondary-button" type="button" data-sign-out>Sign Out</button>
+      </aside>
+    </section>
+
+    <div class="status-banner" data-status-banner aria-live="polite"></div>
+
+    <section class="notifications-panel" aria-labelledby="notification-list-title">
+      <div class="notifications-panel-header">
+        <div>
+          <p class="notifications-kicker">Inbox</p>
+          <h2 id="notification-list-title">Account notifications</h2>
+        </div>
+        <div class="notification-actions">
+          <button class="secondary-button" type="button" data-refresh-notifications>Refresh</button>
+          <button class="secondary-button" type="button" data-run-reminders hidden>Run Appointment Reminders</button>
+          <button class="secondary-button" type="button" data-dispatch-emails hidden>Dispatch Emails</button>
+        </div>
+      </div>
+
+      <div class="notifications-list" data-notifications-list>
+        <p class="notifications-empty">Loading notifications...</p>
+      </div>
+    </section>
+  </main>
+
+  <script type="module" src="./js/notifications.js"></script>
+</body>
+</html>
