@@ -1,6 +1,6 @@
 # VRR Events
 
-VRR Events is a production-oriented full-stack event management web application being built phase by phase. The repository now includes the scaffold, the Express backend foundation, validated MongoDB environment configuration, JWT-based backend authentication, frontend authentication pages, a full public landing page, booking workflow backend APIs, a real booking request frontend, the admin backend needed for booking management and analytics, and a functional admin dashboard frontend.
+VRR Events is a production-oriented full-stack event management web application being built phase by phase. The repository now includes the scaffold, the Express backend foundation, validated MongoDB environment configuration, JWT-based backend authentication, frontend authentication pages, a full public landing page, booking workflow APIs, booking request UI, admin dashboard, organizer module, and appointment scheduling with conflict detection.
 
 ## Current Phase
 
@@ -14,6 +14,8 @@ VRR Events is a production-oriented full-stack event management web application 
 - Phase 8: Booking Form Frontend
 - Phase 9: Admin Dashboard Backend
 - Phase 10: Admin Dashboard Frontend
+- Phase 11: Organizer Module
+- Phase 12: Appointment Scheduling System
 
 ## Completed Modules
 
@@ -100,6 +102,27 @@ VRR Events is a production-oriented full-stack event management web application 
 - Added role guarding so only admin accounts can use `dashboard.html`
 - Added a dedicated admin dashboard CSS file and admin API frontend module
 
+### Phase 11
+
+- Added organizer-only backend routes under `/api/v1/organizer`
+- Added assigned-event listing with organizer dashboard summary counts
+- Added organizer progress-state catalog for event progress controls
+- Added organizer progress update endpoint scoped to assigned bookings only
+- Limited organizer workflow updates to `EVENT_SCHEDULED`, `EVENT_IN_PROGRESS`, and `EVENT_COMPLETED`
+- Added a dedicated organizer dashboard page for assigned events, schedule details, client details, progress updates, and workflow history
+- Added role-aware login/register dashboard routing for admins, organizers, and clients
+
+### Phase 12
+
+- Added an `Appointment` model with booking, client, organizer, schedule, mode, status, and notes fields
+- Added role-aware appointment listing for admins, organizers, and clients
+- Added appointment scheduling with validation for booking access, future date/time, duration, type, and mode
+- Added organizer conflict detection to block overlapping active appointments
+- Added appointment status updates for scheduled, rescheduled, cancelled, and completed states
+- Added a shared appointment scheduling frontend page
+- Added appointment links from admin dashboard, organizer dashboard, and booking flow
+- Added client booking-list API helper for appointment scheduling
+
 ## Project Structure
 
 ```text
@@ -115,9 +138,11 @@ VRR/
 |   |   `-- env.js
 |   |-- controllers/
 |   |   |-- adminController.js
+|   |   |-- appointmentController.js
 |   |   |-- authController.js
 |   |   |-- bookingController.js
 |   |   |-- healthController.js
+|   |   |-- organizerController.js
 |   |   `-- .gitkeep
 |   |-- middleware/
 |   |   |-- auth.js
@@ -125,19 +150,24 @@ VRR/
 |   |   |-- notFound.js
 |   |   `-- .gitkeep
 |   |-- models/
+|   |   |-- Appointment.js
 |   |   |-- Booking.js
 |   |   |-- User.js
 |   |   `-- .gitkeep
 |   |-- routes/
 |   |   |-- adminRoutes.js
+|   |   |-- appointmentRoutes.js
 |   |   |-- authRoutes.js
 |   |   |-- bookingRoutes.js
 |   |   |-- index.js
+|   |   |-- organizerRoutes.js
 |   |   `-- .gitkeep
 |   |-- services/
 |   |   |-- adminService.js
+|   |   |-- appointmentService.js
 |   |   |-- authService.js
 |   |   |-- bookingService.js
+|   |   |-- organizerService.js
 |   |   `-- .gitkeep
 |   |-- uploads/
 |   |   `-- .gitkeep
@@ -152,11 +182,15 @@ VRR/
 |   |-- components/
 |   |-- css/
 |   |   |-- admin-dashboard.css
+|   |   |-- appointments.css
 |   |   |-- auth.css
 |   |   |-- booking.css
-|   |   `-- landing.css
+|   |   |-- landing.css
+|   |   `-- organizer-dashboard.css
 |   |-- js/
 |   |   |-- admin-api.js
+|   |   |-- appointment-api.js
+|   |   |-- appointments.js
 |   |   |-- api-client.js
 |   |   |-- auth-api.js
 |   |   |-- auth-config.js
@@ -167,15 +201,20 @@ VRR/
 |   |   |-- booking-storage.js
 |   |   |-- booking-validation.js
 |   |   |-- booking.js
+|   |   |-- dashboard-routing.js
 |   |   |-- dashboard.js
 |   |   |-- landing.js
 |   |   |-- login.js
+|   |   |-- organizer-api.js
+|   |   |-- organizer-dashboard.js
 |   |   |-- package.json
 |   |   `-- register.js
 |   |-- booking.html
+|   |-- appointments.html
 |   |-- dashboard.html
 |   |-- index.html
 |   |-- login.html
+|   |-- organizer-dashboard.html
 |   `-- register.html
 |-- .gitignore
 `-- README.md
@@ -243,8 +282,8 @@ VRR/
 - Authentication: backend and frontend complete
 - Booking system: backend and frontend request flow complete
 - Admin dashboard: backend and frontend complete
-- Organizer dashboard: pending
-- Appointment scheduling: pending
+- Organizer dashboard: backend and frontend complete
+- Appointment scheduling: backend and frontend complete
 - Budget estimation: pending
 - Agreement PDF generation: pending
 - Analytics dashboard: pending
@@ -286,6 +325,20 @@ VRR/
   Returns admin dashboard summary metrics and recent bookings.
 - `GET /api/v1/admin/analytics/monthly`
   Returns monthly booking creation and guest-count trends.
+- `GET /api/v1/organizer/assignments`
+  Returns the authenticated organizer's assigned bookings and summary counts.
+- `GET /api/v1/organizer/progress-states`
+  Returns organizer-manageable progress states.
+- `PATCH /api/v1/organizer/assignments/:bookingId/progress`
+  Allows the assigned organizer to move an event forward through allowed progress states.
+- `GET /api/v1/appointments`
+  Returns appointments visible to the authenticated user's role.
+- `POST /api/v1/appointments`
+  Schedules an appointment for an accessible booking with organizer conflict detection.
+- `GET /api/v1/appointments/catalog`
+  Returns appointment types, modes, and statuses for frontend controls.
+- `PATCH /api/v1/appointments/:appointmentId/status`
+  Updates the status of an accessible appointment.
 
 ## Frontend Auth Pages
 
@@ -295,6 +348,10 @@ VRR/
   Creates a client account, validates form inputs, and stores the returned JWT session.
 - `frontend/dashboard.html`
   Provides the admin dashboard when the stored session belongs to an admin account.
+- `frontend/organizer-dashboard.html`
+  Provides the organizer dashboard when the stored session belongs to an organizer account.
+- `frontend/appointments.html`
+  Provides the shared role-aware appointment scheduling and appointment list experience.
 
 ## Landing Page
 
@@ -353,6 +410,44 @@ VRR/
 - `frontend/js/dashboard.js`
   Guards admin access, loads dashboard data, renders booking operations, handles pagination, and submits admin updates.
 
+## Organizer Module
+
+- `backend/controllers/organizerController.js`
+  Handles assigned-event retrieval, progress-state catalog responses, and organizer progress updates.
+- `backend/routes/organizerRoutes.js`
+  Mounts organizer-only APIs under `/api/v1/organizer`.
+- `backend/services/organizerService.js`
+  Enforces assigned-booking scope and organizer-safe workflow progress transitions.
+- `frontend/organizer-dashboard.html`
+  Organizer workspace for assigned events, event details, progress updates, and recent workflow history.
+- `frontend/css/organizer-dashboard.css`
+  Dedicated responsive styling for the organizer dashboard.
+- `frontend/js/organizer-api.js`
+  Frontend API adapter for organizer assignment and progress endpoints.
+- `frontend/js/organizer-dashboard.js`
+  Guards organizer access, renders assignments, submits progress updates, and refreshes summary cards.
+- `frontend/js/dashboard-routing.js`
+  Routes admins, organizers, and clients to the correct post-auth workspace.
+
+## Appointment Scheduling
+
+- `backend/models/Appointment.js`
+  Stores booking-linked appointment details, timing, role references, status, mode, location, meeting link, and notes.
+- `backend/controllers/appointmentController.js`
+  Handles appointment listing, scheduling, catalog retrieval, and status updates.
+- `backend/routes/appointmentRoutes.js`
+  Mounts protected appointment APIs under `/api/v1/appointments`.
+- `backend/services/appointmentService.js`
+  Validates scheduling input, enforces role-aware booking access, resolves organizers, and prevents overlapping organizer appointments.
+- `frontend/appointments.html`
+  Shared scheduling page for admins, organizers, and clients.
+- `frontend/css/appointments.css`
+  Responsive appointment scheduling and calendar queue styling.
+- `frontend/js/appointment-api.js`
+  Frontend API adapter for appointment endpoints.
+- `frontend/js/appointments.js`
+  Loads role-aware bookings, organizers, appointments, catalogs, schedule submissions, and appointment status updates.
+
 ## Environment Variables
 
 Configured in `backend/.env`:
@@ -395,8 +490,22 @@ Configured in `backend/.env`:
 27. Assign or clear an organizer from the booking table and confirm the row updates after refresh.
 28. Move a booking to a later workflow state and confirm the dashboard shows the new state.
 29. Log in with a non-admin account, open `dashboard.html`, and confirm the page blocks access and redirects away.
-30. Confirm `GET /api/v1/health` still reports the expected health response.
-31. Confirm startup fails clearly if `JWT_SECRET` or `MONGODB_URI` is missing.
+30. Log in with an organizer account and confirm authentication redirects to `organizer-dashboard.html`.
+31. Confirm `GET /api/v1/organizer/assignments` returns only bookings assigned to the organizer.
+32. Assign a booking to the organizer from the admin dashboard, move it to `EVENT_SCHEDULED`, then refresh the organizer dashboard.
+33. Update progress to `EVENT_IN_PROGRESS` and then `EVENT_COMPLETED` from the organizer dashboard.
+34. Confirm organizer progress updates append workflow history entries.
+35. Confirm organizer attempts to update unassigned bookings return `404`.
+36. Confirm organizer attempts to move bookings backward or update pre-scheduled bookings return `400`.
+37. Open `frontend/appointments.html` as an admin and confirm bookings and organizer options load.
+38. Schedule an appointment with a future start time and confirm it appears in the appointment list.
+39. Attempt to schedule another active appointment for the same organizer with overlapping times and confirm the API returns `409`.
+40. Open `frontend/appointments.html` as an organizer and confirm only assigned booking appointments are visible.
+41. Open `frontend/appointments.html` as a client and confirm only client-owned booking appointments are visible.
+42. Update appointment status to `completed` or `cancelled` and confirm the list refreshes.
+43. Confirm invalid appointment inputs, past start times, and invalid durations are rejected.
+44. Confirm `GET /api/v1/health` still reports the expected health response.
+45. Confirm startup fails clearly if `JWT_SECRET` or `MONGODB_URI` is missing.
 
 ## Phase Notes
 
@@ -411,4 +520,6 @@ Configured in `backend/.env`:
 - Phase 8 adds the frontend booking form and login-return persistence for saved drafts.
 - Phase 9 adds the backend APIs required for admin booking operations and analytics.
 - Phase 10 adds the frontend admin dashboard for analytics, filtering, assignment, pagination, and workflow updates.
-- Organizer dashboard, scheduling, quotation, agreement, notifications, and deployment work are intentionally deferred to later phases.
+- Phase 11 adds organizer assignment views and assigned-event progress updates.
+- Phase 12 adds role-aware appointment scheduling, status management, and organizer conflict detection.
+- Quotation, agreement, notifications, and deployment work are intentionally deferred to later phases.

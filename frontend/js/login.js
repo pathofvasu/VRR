@@ -1,11 +1,14 @@
 import { loginUser } from "./auth-api.js";
 import { DEFAULT_API_BASE_URL, getApiBaseUrl, setApiBaseUrl } from "./auth-config.js";
-import { consumePostAuthRedirectUrl, isAuthenticated, saveAuthSession } from "./auth-storage.js";
+import { consumePostAuthRedirectUrl, getAuthSession, isAuthenticated, saveAuthSession } from "./auth-storage.js";
 import { validateApiBaseUrl, validateEmail } from "./auth-validation.js";
 import { clearFieldErrors, setFieldError, setStatusBanner, setSubmitState, attachPasswordToggle } from "./auth-ui.js";
+import { getDashboardUrlForRole } from "./dashboard-routing.js";
 
 if (isAuthenticated()) {
-  window.location.href = consumePostAuthRedirectUrl() || "./dashboard.html";
+  const existingSession = getAuthSession();
+  window.location.href =
+    consumePostAuthRedirectUrl() || getDashboardUrlForRole(existingSession?.user?.role);
 }
 
 const form = document.querySelector("[data-auth-form='login']");
@@ -56,7 +59,8 @@ form.addEventListener("submit", async (event) => {
     });
 
     saveAuthSession(response.data);
-    const redirectDestination = consumePostAuthRedirectUrl() || "./dashboard.html";
+    const redirectDestination =
+      consumePostAuthRedirectUrl() || getDashboardUrlForRole(response.data.user.role);
     setStatusBanner("Login successful. Redirecting to continue your flow...", "success");
     window.setTimeout(() => {
       window.location.href = redirectDestination;

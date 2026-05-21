@@ -77,6 +77,105 @@ const budgetSchema = new mongoose.Schema(
   }
 );
 
+const quotationLineItemSchema = new mongoose.Schema(
+  {
+    label: {
+      type: String,
+      required: true,
+      trim: true,
+      maxlength: 140,
+    },
+    description: {
+      type: String,
+      trim: true,
+      maxlength: 260,
+    },
+    quantity: {
+      type: Number,
+      required: true,
+      min: 1,
+    },
+    unitPrice: {
+      type: Number,
+      required: true,
+      min: 0,
+    },
+    total: {
+      type: Number,
+      required: true,
+      min: 0,
+    },
+  },
+  {
+    _id: false,
+  }
+);
+
+const quotationSchema = new mongoose.Schema(
+  {
+    packageTier: {
+      type: String,
+      enum: ["essential", "signature", "luxury"],
+      default: "signature",
+    },
+    currency: {
+      type: String,
+      default: "INR",
+      trim: true,
+      uppercase: true,
+      maxlength: 6,
+    },
+    subtotal: {
+      type: Number,
+      default: 0,
+      min: 0,
+    },
+    serviceFee: {
+      type: Number,
+      default: 0,
+      min: 0,
+    },
+    tax: {
+      type: Number,
+      default: 0,
+      min: 0,
+    },
+    discount: {
+      type: Number,
+      default: 0,
+      min: 0,
+    },
+    total: {
+      type: Number,
+      default: 0,
+      min: 0,
+    },
+    validUntil: {
+      type: Date,
+    },
+    proposalNotes: {
+      type: String,
+      trim: true,
+      maxlength: 1600,
+    },
+    lineItems: {
+      type: [quotationLineItemSchema],
+      default: [],
+    },
+    generatedBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      default: null,
+    },
+    generatedAt: {
+      type: Date,
+    },
+  },
+  {
+    _id: false,
+  }
+);
+
 const consultationPreferenceSchema = new mongoose.Schema(
   {
     requested: {
@@ -181,6 +280,10 @@ const bookingSchema = new mongoose.Schema(
       default: () => ({
         currency: "INR",
       }),
+    },
+    quotation: {
+      type: quotationSchema,
+      default: null,
     },
     servicesRequested: {
       type: [String],

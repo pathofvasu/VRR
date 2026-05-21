@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VRR Events | Appointments</title>
+  <link rel="stylesheet" href="./css/auth.css">
+  <link rel="stylesheet" href="./css/appointments.css">
+</head>
+<body>
+  <main class="appointments-shell">
+    <section class="appointments-hero" aria-labelledby="appointments-title">
+      <div>
+        <p class="appointments-kicker">Scheduling Desk</p>
+        <h1 id="appointments-title">Consultations & Appointments</h1>
+        <p>
+          Schedule consultations, review upcoming meetings, and keep appointment status aligned with
+          each booking workflow.
+        </p>
+      </div>
+      <aside class="appointments-profile" aria-label="Signed in account">
+        <span data-user-role>Checking access...</span>
+        <strong data-user-name>Loading...</strong>
+        <small data-user-email>Loading...</small>
+        <a class="secondary-button appointments-link" href="#" data-dashboard-link>Dashboard</a>
+        <button class="secondary-button" type="button" data-sign-out>Sign Out</button>
+      </aside>
+    </section>
+
+    <div class="status-banner" data-status-banner aria-live="polite"></div>
+
+    <section class="appointments-layout">
+      <article class="appointments-panel" aria-labelledby="schedule-title">
+        <div class="appointments-panel-header">
+          <div>
+            <p class="appointments-kicker">Create Appointment</p>
+            <h2 id="schedule-title">Schedule a meeting</h2>
+          </div>
+        </div>
+
+        <form class="appointment-form" data-appointment-form>
+          <label>
+            <span>Booking</span>
+            <select name="bookingId" data-booking-select required>
+              <option value="">Select a booking</option>
+            </select>
+          </label>
+
+          <label data-organizer-field>
+            <span>Organizer</span>
+            <select name="organizerId" data-organizer-select>
+              <option value="">Use assigned organizer / none</option>
+            </select>
+          </label>
+
+          <label>
+            <span>Title</span>
+            <input type="text" name="title" minlength="3" maxlength="140" value="Consultation call" required>
+          </label>
+
+          <div class="appointment-row">
+            <label>
+              <span>Type</span>
+              <select name="appointmentType" data-type-select></select>
+            </label>
+            <label>
+              <span>Mode</span>
+              <select name="mode" data-mode-select></select>
+            </label>
+          </div>
+
+          <div class="appointment-row">
+            <label>
+              <span>Start time</span>
+              <input type="datetime-local" name="startAt" required>
+            </label>
+            <label>
+              <span>Duration</span>
+              <select name="durationMinutes">
+                <option value="30">30 minutes</option>
+                <option value="45">45 minutes</option>
+                <option value="60" selected>60 minutes</option>
+                <option value="90">90 minutes</option>
+                <option value="120">120 minutes</option>
+              </select>
+            </label>
+          </div>
+
+          <label>
+            <span>Location</span>
+            <input type="text" name="location" maxlength="220" placeholder="Office, venue, or city">
+          </label>
+
+          <label>
+            <span>Meeting link</span>
+            <input type="url" name="meetingLink" maxlength="300" placeholder="https://meet.example.com/session">
+          </label>
+
+          <label>
+            <span>Notes</span>
+            <textarea name="notes" maxlength="1000" placeholder="Agenda, preparation notes, or client preferences"></textarea>
+          </label>
+
+          <button class="primary-button" type="submit" data-submit-appointment>Schedule Appointment</button>
+        </form>
+      </article>
+
+      <article class="appointments-panel" aria-labelledby="list-title">
+        <div class="appointments-panel-header">
+          <div>
+            <p class="appointments-kicker">Calendar Queue</p>
+            <h2 id="list-title">Upcoming and recent appointments</h2>
+          </div>
+          <button class="secondary-button" type="button" data-refresh-appointments>Refresh</button>
+        </div>
+
+        <div class="appointments-list" data-appointments-list>
+          <p class="appointments-empty">Loading appointments...</p>
+        </div>
+      </article>
+    </section>
+  </main>
+
+  <script type="module" src="./js/appointments.js"></script>
+</body>
+</html>

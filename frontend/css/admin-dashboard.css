@@ -81,6 +81,12 @@
   font-size: 1.25rem;
 }
 
+.appointments-link {
+  display: inline-flex;
+  justify-content: center;
+  text-decoration: none;
+}
+
 .admin-grid,
 .admin-dashboard-columns {
   max-width: 1400px;

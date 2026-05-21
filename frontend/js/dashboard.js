@@ -10,6 +10,7 @@ import { fetchCurrentUser } from "./auth-api.js";
 import { clearAuthSession, getAuthSession, saveAuthSession } from "./auth-storage.js";
 import { setStatusBanner } from "./auth-ui.js";
 import { fetchWorkflowStates } from "./booking-api.js";
+import { getDashboardUrlForRole } from "./dashboard-routing.js";
 
 const session = getAuthSession();
 const state = {
@@ -320,9 +321,9 @@ const verifyAdminSession = async () => {
     renderUser();
 
     if (state.user.role !== "admin") {
-      setStatusBanner("This dashboard requires an admin account. Redirecting to the booking page.");
+      setStatusBanner("This dashboard requires an admin account. Redirecting to your workspace.");
       window.setTimeout(() => {
-        window.location.href = "./booking.html";
+        window.location.href = getDashboardUrlForRole(state.user.role);
       }, 1200);
       return false;
     }

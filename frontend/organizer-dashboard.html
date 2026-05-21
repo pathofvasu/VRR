@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VRR Events | Organizer Dashboard</title>
+  <link rel="stylesheet" href="./css/auth.css">
+  <link rel="stylesheet" href="./css/organizer-dashboard.css">
+</head>
+<body>
+  <main class="organizer-shell">
+    <section class="organizer-hero" aria-labelledby="organizer-title">
+      <div>
+        <p class="organizer-kicker">Organizer Workspace</p>
+        <h1 id="organizer-title">Assigned Events</h1>
+        <p>
+          Track your assigned VRR events, review client and venue details, and update event progress
+          as work moves from schedule to completion.
+        </p>
+      </div>
+      <aside class="organizer-profile" aria-label="Signed in organizer">
+        <span data-user-role>Checking access...</span>
+        <strong data-user-name>Loading...</strong>
+        <small data-user-email>Loading...</small>
+        <a class="secondary-button organizer-link" href="./appointments.html">Appointments</a>
+        <button class="secondary-button" type="button" data-sign-out>Sign Out</button>
+      </aside>
+    </section>
+
+    <div class="status-banner" data-status-banner aria-live="polite"></div>
+
+    <section class="organizer-metrics" aria-label="Organizer assignment summary">
+      <article>
+        <span>Total Assigned</span>
+        <strong data-summary="assignedBookings">--</strong>
+      </article>
+      <article>
+        <span>Upcoming</span>
+        <strong data-summary="upcomingEvents">--</strong>
+      </article>
+      <article>
+        <span>In Progress</span>
+        <strong data-summary="inProgressEvents">--</strong>
+      </article>
+      <article>
+        <span>Completed</span>
+        <strong data-summary="completedEvents">--</strong>
+      </article>
+    </section>
+
+    <section class="organizer-panel" aria-labelledby="assignment-title">
+      <div class="organizer-panel-header">
+        <div>
+          <p class="organizer-kicker">Event Queue</p>
+          <h2 id="assignment-title">Manage assigned bookings</h2>
+        </div>
+        <button class="secondary-button" type="button" data-refresh-assignments>Refresh Assignments</button>
+      </div>
+
+      <div class="assignment-grid" data-assignment-list>
+        <p class="organizer-empty">Loading assigned events...</p>
+      </div>
+    </section>
+  </main>
+
+  <script type="module" src="./js/organizer-dashboard.js"></script>
+</body>
+</html>

@@ -14,7 +14,16 @@ const createBooking = ({ token, payload }) =>
     body: JSON.stringify(payload),
   });
 
+const fetchUserBookings = (token) =>
+  request("/bookings", {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
 export {
   fetchWorkflowStates,
   createBooking,
+  fetchUserBookings,
 };
