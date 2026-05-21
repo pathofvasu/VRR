@@ -4,11 +4,308 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>VRR Events | Booking</title>
+  <meta name="description" content="Submit your VRR Events booking request, capture planning details, and preserve your progress even if you need to log in before submission.">
+  <link rel="stylesheet" href="./css/auth.css">
+  <link rel="stylesheet" href="./css/booking.css">
 </head>
 <body>
-  <main>
-    <h1>Booking Request</h1>
-    <p>Booking page scaffold created in Phase 1. Interactive booking flow arrives in Phase 8.</p>
+  <main class="booking-shell">
+    <div class="booking-layout">
+      <aside class="booking-panel" aria-labelledby="booking-intro-title">
+        <div class="booking-badge">Booking Request Workflow</div>
+        <h1 id="booking-intro-title">Turn your event idea into a structured request.</h1>
+        <p>
+          Phase 8 connects the public booking experience to the authenticated backend flow. You can complete the
+          form now, keep a saved draft locally, and continue after login without losing your progress.
+        </p>
+
+        <div class="booking-summary-list">
+          <div class="booking-summary-item">
+            <strong>What you can submit</strong>
+            <p>Event basics, guest scale, location, budget range, requested services, and consultation preferences.</p>
+          </div>
+          <div class="booking-summary-item">
+            <strong>What happens next</strong>
+            <p>Your booking starts in `REQUEST_SUBMITTED` and becomes the anchor for reviews, consultations, quotes, and agreements.</p>
+          </div>
+          <div class="booking-summary-item">
+            <strong>What gets preserved</strong>
+            <p>Draft details stay in browser local storage until you submit or clear them by replacing the form.</p>
+          </div>
+        </div>
+
+        <div class="workflow-card">
+          <strong>Workflow Preview</strong>
+          <p>The booking backend publishes the ordered workflow states below for clients and future dashboards.</p>
+          <div class="workflow-list" data-workflow-list>
+            <div class="workflow-step">
+              <div class="workflow-index">...</div>
+              <div>
+                <strong>Loading workflow states</strong>
+                <p class="draft-note">Connecting to the backend booking catalog.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <section class="booking-form-panel" aria-labelledby="booking-form-title">
+        <div class="booking-form-header">
+          <h2 id="booking-form-title">Submit your booking request</h2>
+          <p>
+            Complete as much detail as you have today. Budget and venue specifics can stay flexible while still
+            giving the planning team enough signal to begin review.
+          </p>
+        </div>
+
+        <div class="session-card">
+          <div class="session-indicator is-guest" data-session-indicator>Guest draft mode</div>
+          <p data-session-message></p>
+          <div class="session-actions" data-session-links></div>
+        </div>
+
+        <div class="status-banner" data-status-banner aria-live="polite"></div>
+
+        <form class="booking-form" data-booking-form novalidate>
+          <div class="field-group" data-field-group="apiBaseUrl">
+            <label for="apiBaseUrl">Backend API Base URL</label>
+            <input id="apiBaseUrl" name="apiBaseUrl" type="url" placeholder="http://localhost:5000/api/v1" autocomplete="off">
+            <p class="field-help">Use the same backend URL as the auth pages. The public workflow-state catalog and authenticated booking submission both use this value.</p>
+            <div class="field-error" data-field-error="apiBaseUrl" aria-live="polite"></div>
+          </div>
+
+          <div class="field-row">
+            <div class="field-group" data-field-group="eventTitle">
+              <label for="eventTitle">Event Title</label>
+              <input id="eventTitle" name="eventTitle" type="text" placeholder="Sunset Garden Wedding">
+              <div class="field-error" data-field-error="eventTitle" aria-live="polite"></div>
+            </div>
+
+            <div class="field-group" data-field-group="eventType">
+              <label for="eventType">Event Type</label>
+              <select id="eventType" name="eventType">
+                <option value="">Choose an event type</option>
+                <option value="wedding">Wedding</option>
+                <option value="engagement">Engagement</option>
+                <option value="birthday">Birthday</option>
+                <option value="corporate">Corporate</option>
+                <option value="private-party">Private Party</option>
+                <option value="cultural-event">Cultural Event</option>
+                <option value="other">Other</option>
+              </select>
+              <div class="field-error" data-field-error="eventType" aria-live="polite"></div>
+            </div>
+          </div>
+
+          <div class="field-row">
+            <div class="field-group" data-field-group="eventDate">
+              <label for="eventDate">Event Date</label>
+              <input id="eventDate" name="eventDate" type="date">
+              <div class="field-error" data-field-error="eventDate" aria-live="polite"></div>
+            </div>
+
+            <div class="field-group" data-field-group="guestCount">
+              <label for="guestCount">Guest Count</label>
+              <input id="guestCount" name="guestCount" type="number" min="1" step="1" placeholder="180">
+              <div class="field-error" data-field-error="guestCount" aria-live="polite"></div>
+            </div>
+          </div>
+
+          <div class="field-row">
+            <div class="field-group" data-field-group="city">
+              <label for="city">Event City</label>
+              <input id="city" name="city" type="text" placeholder="Jaipur">
+              <div class="field-error" data-field-error="city" aria-live="polite"></div>
+            </div>
+
+            <div class="field-group" data-field-group="contactPhone">
+              <label for="contactPhone">Primary Contact Phone</label>
+              <input id="contactPhone" name="contactPhone" type="tel" placeholder="+91-9876543210">
+              <div class="field-error" data-field-error="contactPhone" aria-live="polite"></div>
+            </div>
+          </div>
+
+          <div class="field-row">
+            <div class="field-group">
+              <label for="venueName">Venue Name</label>
+              <input id="venueName" name="venueName" type="text" placeholder="Amber Courtyard">
+            </div>
+
+            <div class="field-group">
+              <label for="venueAddress">Venue Address</label>
+              <input id="venueAddress" name="venueAddress" type="text" placeholder="Civil Lines, Jaipur">
+            </div>
+          </div>
+
+          <div class="field-group" data-field-group="servicesRequested">
+            <label>Requested Services</label>
+            <div class="services-grid">
+              <label class="service-option">
+                <input type="checkbox" name="servicesRequested" value="planning-and-coordination">
+                <div>
+                  <span>Planning & Coordination</span>
+                  <small>Master planning, timelines, and final-day coordination.</small>
+                </div>
+              </label>
+              <label class="service-option">
+                <input type="checkbox" name="servicesRequested" value="venue-sourcing">
+                <div>
+                  <span>Venue Sourcing</span>
+                  <small>Location discovery and shortlist support.</small>
+                </div>
+              </label>
+              <label class="service-option">
+                <input type="checkbox" name="servicesRequested" value="decor-and-styling">
+                <div>
+                  <span>Decor & Styling</span>
+                  <small>Visual direction, mood, staging, and guest-facing atmosphere.</small>
+                </div>
+              </label>
+              <label class="service-option">
+                <input type="checkbox" name="servicesRequested" value="guest-management">
+                <div>
+                  <span>Guest Management</span>
+                  <small>Guest coordination, hospitality, and arrival flow.</small>
+                </div>
+              </label>
+              <label class="service-option">
+                <input type="checkbox" name="servicesRequested" value="vendor-management">
+                <div>
+                  <span>Vendor Management</span>
+                  <small>Production coordination across external partners.</small>
+                </div>
+              </label>
+              <label class="service-option">
+                <input type="checkbox" name="servicesRequested" value="catering-curation">
+                <div>
+                  <span>Catering Curation</span>
+                  <small>Food experience planning and menu collaboration.</small>
+                </div>
+              </label>
+              <label class="service-option">
+                <input type="checkbox" name="servicesRequested" value="entertainment-and-stage">
+                <div>
+                  <span>Entertainment & Stage</span>
+                  <small>Performance blocks, MC flow, and stage planning.</small>
+                </div>
+              </label>
+              <label class="service-option">
+                <input type="checkbox" name="servicesRequested" value="photography-and-film">
+                <div>
+                  <span>Photography & Film</span>
+                  <small>Coverage planning and visual documentation support.</small>
+                </div>
+              </label>
+            </div>
+            <div class="field-error" data-field-error="servicesRequested" aria-live="polite"></div>
+          </div>
+
+          <div class="field-row">
+            <div class="field-group" data-field-group="budgetMinimum">
+              <label for="budgetMinimum">Budget Minimum</label>
+              <input id="budgetMinimum" name="budgetMinimum" type="number" min="0" step="1000" placeholder="450000">
+              <div class="field-error" data-field-error="budgetMinimum" aria-live="polite"></div>
+            </div>
+
+            <div class="field-group" data-field-group="budgetMaximum">
+              <label for="budgetMaximum">Budget Maximum</label>
+              <input id="budgetMaximum" name="budgetMaximum" type="number" min="0" step="1000" placeholder="900000">
+              <div class="field-error" data-field-error="budgetMaximum" aria-live="polite"></div>
+            </div>
+          </div>
+
+          <div class="field-row">
+            <div class="field-group">
+              <label for="budgetCurrency">Budget Currency</label>
+              <select id="budgetCurrency" name="budgetCurrency">
+                <option value="INR">INR</option>
+                <option value="USD">USD</option>
+                <option value="EUR">EUR</option>
+              </select>
+            </div>
+
+            <div class="field-group" data-field-group="budgetRange">
+              <label for="budgetNotes">Budget Notes</label>
+              <input id="budgetNotes" name="budgetNotes" type="text" placeholder="Need room for decor upgrades or guest gifting.">
+              <div class="field-error" data-field-error="budgetRange" aria-live="polite"></div>
+            </div>
+          </div>
+
+          <div class="field-group">
+            <label class="toggle-row" for="consultationRequested">
+              <input id="consultationRequested" name="consultationRequested" type="checkbox" checked>
+              <span>Yes, I want to schedule a consultation as part of this booking request.</span>
+            </label>
+          </div>
+
+          <div class="consultation-fields" data-consultation-fields>
+            <div class="field-row">
+              <div class="field-group" data-field-group="preferredConsultationDate">
+                <label for="preferredConsultationDate">Preferred Consultation Date</label>
+                <input id="preferredConsultationDate" name="preferredConsultationDate" type="date">
+                <div class="field-error" data-field-error="preferredConsultationDate" aria-live="polite"></div>
+              </div>
+
+              <div class="field-group">
+                <label for="preferredConsultationTimeSlot">Preferred Time Slot</label>
+                <input id="preferredConsultationTimeSlot" name="preferredConsultationTimeSlot" type="text" placeholder="Weekday evenings">
+              </div>
+            </div>
+
+            <div class="field-group" data-field-group="preferredConsultationMode">
+              <label for="preferredConsultationMode">Preferred Consultation Mode</label>
+              <select id="preferredConsultationMode" name="preferredConsultationMode">
+                <option value="flexible">Flexible</option>
+                <option value="video-call">Video Call</option>
+                <option value="phone-call">Phone Call</option>
+                <option value="in-person">In Person</option>
+              </select>
+              <div class="field-error" data-field-error="preferredConsultationMode" aria-live="polite"></div>
+            </div>
+          </div>
+
+          <div class="field-group">
+            <label for="notes">Planning Notes</label>
+            <textarea id="notes" name="notes" rows="5" placeholder="Share preferred aesthetic direction, scheduling constraints, family or guest considerations, or anything else that will help the review."></textarea>
+            <p class="draft-note">Drafts are saved locally while you type, including before login.</p>
+          </div>
+
+          <div class="booking-links">
+            <button class="primary-button" type="submit" data-submit-button>Submit Booking Request</button>
+            <a class="secondary-button dashboard-link" href="./dashboard.html">View Dashboard</a>
+            <a class="ghost-button dashboard-link" href="./index.html">Back to Home</a>
+          </div>
+        </form>
+
+        <section class="booking-success-panel" hidden data-booking-success aria-labelledby="booking-success-title">
+          <h3 id="booking-success-title">Booking request submitted</h3>
+          <p>Your request has entered the workflow and is now ready for admin review and consultation coordination.</p>
+          <div class="success-summary">
+            <div>
+              <strong>Booking Code</strong>
+              <span data-booking-code>-</span>
+            </div>
+            <div>
+              <strong>Workflow State</strong>
+              <span data-booking-state>-</span>
+            </div>
+            <div>
+              <strong>Event</strong>
+              <span data-booking-event>-</span>
+            </div>
+            <div>
+              <strong>Event Date</strong>
+              <span data-booking-date>-</span>
+            </div>
+            <div>
+              <strong>History Entries</strong>
+              <span data-booking-history-count>-</span>
+            </div>
+          </div>
+        </section>
+      </section>
+    </div>
   </main>
+  <script type="module" src="./js/booking.js"></script>
 </body>
 </html>

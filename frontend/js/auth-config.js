@@ -2,6 +2,8 @@ const DEFAULT_API_BASE_URL = "http://localhost:5000/api/v1";
 const STORAGE_KEYS = {
   apiBaseUrl: "vrr-events-api-base-url",
   authSession: "vrr-events-auth-session",
+  postAuthRedirect: "vrr-events-post-auth-redirect",
+  bookingDraft: "vrr-events-booking-draft",
 };
 
 const getApiBaseUrl = () => localStorage.getItem(STORAGE_KEYS.apiBaseUrl) || DEFAULT_API_BASE_URL;

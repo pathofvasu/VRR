@@ -31,9 +31,29 @@ const clearAuthSession = () => {
 
 const isAuthenticated = () => Boolean(getAuthSession()?.token);
 
+const setPostAuthRedirectUrl = (value) => {
+  localStorage.setItem(STORAGE_KEYS.postAuthRedirect, value);
+};
+
+const getPostAuthRedirectUrl = () => localStorage.getItem(STORAGE_KEYS.postAuthRedirect);
+
+const clearPostAuthRedirectUrl = () => {
+  localStorage.removeItem(STORAGE_KEYS.postAuthRedirect);
+};
+
+const consumePostAuthRedirectUrl = () => {
+  const redirectUrl = getPostAuthRedirectUrl();
+  clearPostAuthRedirectUrl();
+  return redirectUrl;
+};
+
 export {
   saveAuthSession,
   getAuthSession,
   clearAuthSession,
   isAuthenticated,
+  setPostAuthRedirectUrl,
+  getPostAuthRedirectUrl,
+  clearPostAuthRedirectUrl,
+  consumePostAuthRedirectUrl,
 };

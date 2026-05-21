@@ -1,6 +1,6 @@
 import { registerUser } from "./auth-api.js";
 import { DEFAULT_API_BASE_URL, getApiBaseUrl, setApiBaseUrl } from "./auth-config.js";
-import { saveAuthSession, isAuthenticated } from "./auth-storage.js";
+import { consumePostAuthRedirectUrl, isAuthenticated, saveAuthSession } from "./auth-storage.js";
 import {
   validateApiBaseUrl,
   validateEmail,
@@ -11,7 +11,7 @@ import {
 import { clearFieldErrors, setFieldError, setStatusBanner, setSubmitState, attachPasswordToggle } from "./auth-ui.js";
 
 if (isAuthenticated()) {
-  window.location.href = "./dashboard.html";
+  window.location.href = consumePostAuthRedirectUrl() || "./dashboard.html";
 }
 
 const form = document.querySelector("[data-auth-form='register']");
@@ -68,9 +68,10 @@ form.addEventListener("submit", async (event) => {
     });
 
     saveAuthSession(response.data);
-    setStatusBanner("Account created successfully. Redirecting to your dashboard...", "success");
+    const redirectDestination = consumePostAuthRedirectUrl() || "./dashboard.html";
+    setStatusBanner("Account created successfully. Redirecting to continue your flow...", "success");
     window.setTimeout(() => {
-      window.location.href = "./dashboard.html";
+      window.location.href = redirectDestination;
     }, 650);
   } catch (error) {
     setStatusBanner(error.message || "Unable to create your account right now.");

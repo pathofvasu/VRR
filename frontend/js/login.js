@@ -1,11 +1,11 @@
 import { loginUser } from "./auth-api.js";
 import { DEFAULT_API_BASE_URL, getApiBaseUrl, setApiBaseUrl } from "./auth-config.js";
-import { saveAuthSession, isAuthenticated } from "./auth-storage.js";
+import { consumePostAuthRedirectUrl, isAuthenticated, saveAuthSession } from "./auth-storage.js";
 import { validateApiBaseUrl, validateEmail } from "./auth-validation.js";
 import { clearFieldErrors, setFieldError, setStatusBanner, setSubmitState, attachPasswordToggle } from "./auth-ui.js";
 
 if (isAuthenticated()) {
-  window.location.href = "./dashboard.html";
+  window.location.href = consumePostAuthRedirectUrl() || "./dashboard.html";
 }
 
 const form = document.querySelector("[data-auth-form='login']");
@@ -56,9 +56,10 @@ form.addEventListener("submit", async (event) => {
     });
 
     saveAuthSession(response.data);
-    setStatusBanner("Login successful. Redirecting to your dashboard...", "success");
+    const redirectDestination = consumePostAuthRedirectUrl() || "./dashboard.html";
+    setStatusBanner("Login successful. Redirecting to continue your flow...", "success");
     window.setTimeout(() => {
-      window.location.href = "./dashboard.html";
+      window.location.href = redirectDestination;
     }, 650);
   } catch (error) {
     setStatusBanner(error.message || "Unable to sign you in right now.");

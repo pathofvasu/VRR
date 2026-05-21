@@ -1,0 +1,329 @@
+body {
+  background:
+    radial-gradient(circle at top left, rgba(194, 96, 60, 0.18), transparent 28%),
+    radial-gradient(circle at 84% 12%, rgba(47, 115, 105, 0.18), transparent 26%),
+    linear-gradient(180deg, #f8efe3 0%, #f4ebdf 48%, #f6f0e9 100%);
+}
+
+.booking-shell {
+  min-height: 100vh;
+  padding: 28px;
+}
+
+.booking-layout {
+  max-width: 1240px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  gap: 24px;
+}
+
+.booking-panel,
+.booking-form-panel,
+.booking-success-panel {
+  border: 1px solid rgba(62, 44, 36, 0.12);
+  border-radius: 28px;
+  box-shadow: 0 28px 70px rgba(63, 38, 29, 0.14);
+  backdrop-filter: blur(10px);
+}
+
+.booking-panel {
+  background:
+    linear-gradient(155deg, rgba(37, 24, 18, 0.94), rgba(102, 44, 25, 0.84)),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.08), transparent);
+  color: #fff7ef;
+  padding: 34px;
+  position: sticky;
+  top: 22px;
+  align-self: start;
+}
+
+.booking-panel p,
+.booking-panel li,
+.session-card p,
+.booking-success-panel p,
+.workflow-card p,
+.draft-note {
+  color: rgba(255, 244, 234, 0.8);
+  line-height: 1.7;
+}
+
+.booking-panel h1,
+.booking-form-header h2,
+.booking-success-panel h3 {
+  margin: 0;
+  font-family: Georgia, "Times New Roman", serif;
+  letter-spacing: -0.04em;
+}
+
+.booking-panel h1 {
+  margin-top: 14px;
+  font-size: clamp(2.4rem, 4vw, 4.3rem);
+  line-height: 0.95;
+}
+
+.booking-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.booking-summary-list,
+.session-actions,
+.workflow-list,
+.success-summary {
+  display: grid;
+  gap: 14px;
+}
+
+.booking-summary-list {
+  margin: 28px 0;
+}
+
+.booking-summary-item,
+.session-card,
+.workflow-card {
+  padding: 18px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.booking-summary-item strong,
+.session-card strong,
+.workflow-card strong,
+.success-summary strong {
+  display: block;
+  margin-bottom: 8px;
+  color: #fff9f3;
+}
+
+.booking-form-panel {
+  background: rgba(255, 252, 247, 0.88);
+  padding: 34px;
+}
+
+.booking-form-header {
+  margin-bottom: 24px;
+}
+
+.booking-form-header p {
+  color: #6b5648;
+  line-height: 1.7;
+  margin: 10px 0 0;
+}
+
+.booking-form {
+  display: grid;
+  gap: 18px;
+}
+
+.booking-form .field-group select,
+.booking-form .field-group textarea {
+  width: 100%;
+  border: 1px solid rgba(68, 46, 35, 0.16);
+  border-radius: 12px;
+  padding: 14px 15px;
+  font: inherit;
+  color: #241711;
+  background: rgba(255, 250, 244, 0.96);
+  transition: border-color 180ms ease, box-shadow 180ms ease, transform 180ms ease;
+}
+
+.booking-form .field-group select:focus,
+.booking-form .field-group textarea:focus {
+  outline: none;
+  border-color: rgba(181, 84, 47, 0.62);
+  box-shadow: 0 0 0 4px rgba(181, 84, 47, 0.14);
+  transform: translateY(-1px);
+}
+
+.booking-form .field-row {
+  align-items: start;
+}
+
+.services-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.service-option {
+  display: flex;
+  gap: 12px;
+  align-items: start;
+  padding: 14px 16px;
+  border-radius: 16px;
+  background: rgba(255, 250, 244, 0.9);
+  border: 1px solid rgba(68, 46, 35, 0.1);
+}
+
+.service-option input {
+  margin-top: 4px;
+}
+
+.service-option span {
+  color: #241711;
+  font-weight: 700;
+}
+
+.service-option small {
+  display: block;
+  color: #6b5648;
+  line-height: 1.5;
+  margin-top: 4px;
+}
+
+.session-card {
+  margin-bottom: 18px;
+}
+
+.session-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 14px;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.session-indicator.is-authenticated {
+  background: rgba(46, 125, 91, 0.16);
+  color: #14533a;
+}
+
+.session-indicator.is-guest {
+  background: rgba(181, 84, 47, 0.14);
+  color: #8a321b;
+}
+
+.session-actions {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-top: 14px;
+}
+
+.workflow-list {
+  margin-top: 18px;
+}
+
+.workflow-step {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 12px;
+  align-items: start;
+  padding: 14px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.workflow-step:last-child {
+  border-bottom: none;
+}
+
+.workflow-index {
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  background: rgba(255, 255, 255, 0.14);
+  color: #fff7ef;
+  font-weight: 700;
+}
+
+.workflow-step strong {
+  margin-bottom: 4px;
+}
+
+.toggle-row {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  padding: 14px 16px;
+  border-radius: 16px;
+  background: rgba(255, 250, 244, 0.92);
+  border: 1px solid rgba(68, 46, 35, 0.1);
+}
+
+.toggle-row input {
+  margin: 0;
+}
+
+.consultation-fields[hidden],
+.booking-success-panel[hidden] {
+  display: none;
+}
+
+.booking-success-panel {
+  margin-top: 22px;
+  padding: 28px;
+  background: rgba(249, 254, 250, 0.92);
+}
+
+.booking-success-panel h3 {
+  color: #1d523a;
+  font-size: 1.9rem;
+}
+
+.success-summary {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-top: 18px;
+}
+
+.success-summary div {
+  padding: 16px;
+  border-radius: 16px;
+  background: rgba(46, 125, 91, 0.08);
+  border: 1px solid rgba(46, 125, 91, 0.12);
+}
+
+.draft-note {
+  margin: 0;
+  font-size: 0.88rem;
+  color: #6b5648;
+}
+
+.booking-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+@media (max-width: 1024px) {
+  .booking-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .booking-panel {
+    position: static;
+  }
+}
+
+@media (max-width: 680px) {
+  .booking-shell {
+    padding: 16px;
+  }
+
+  .booking-panel,
+  .booking-form-panel,
+  .booking-success-panel {
+    padding: 22px;
+  }
+
+  .services-grid,
+  .session-actions,
+  .success-summary {
+    grid-template-columns: 1fr;
+  }
+}
